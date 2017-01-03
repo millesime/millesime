@@ -1,14 +1,23 @@
 # Compiler
 
-Compile you PHP code.
+Compile you PHP code into Phar archive.
 
 ```
-compiler compile your-project.phar ./
+cd /your/project/
+compiler compile
 ```
+
+This program will creates
 
 Using a manifest.yml
 
 ```yaml
 your-project:
-  main: index.php
+  stub: src/bootstrap.php
+```
+
+## Installation
+
+```
+bin/install
 ```

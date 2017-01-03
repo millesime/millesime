@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+bin/compiler compile ./ compiler.phar
+sudo cp compiler.phar /usr/local/bin/compiler
+chmod +x /usr/local/bin/compiler
+
+echo 'compiler installed'
