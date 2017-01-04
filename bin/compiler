@@ -7,12 +7,12 @@ use Symfony\Component\Console\Application;
 use Methylbro\Compiler\Command\CompileCommand;
 use Methylbro\Compiler\Command\ExtractCommand;
 
-$application = new Application('Compiler', '1.0.1-dev');
+$application = new Application('@name@', '@distrib@-@version@');
 
 $compile = new CompileCommand();
-$extract = new ExtractCommand();
+#$extract = new ExtractCommand();
 
 $application->add($compile);
-$application->add($extract);
+#$application->add($extract);
 
 $application->run();

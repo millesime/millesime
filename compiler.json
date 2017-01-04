@@ -1,0 +1,16 @@
+{
+    "name": "Compiler",
+    "version": "dev",
+    "authors": [
+        {
+            "name": "Methylbro",
+            "email": "thomas@gasc.fr"
+        }
+    ],
+    "distrib": [
+        {
+            "name": "compiler",
+            "stub": "bin/compiler"
+        }
+    ]
+}

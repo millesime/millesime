@@ -7,14 +7,28 @@ cd /your/project/
 compiler compile
 ```
 
-This program will creates
+This program will creates a phar archive from your project.
 
-Using a manifest.yml
 
-```yaml
-your-project:
-  stub: src/bootstrap.php
+## Compiler.json project setup
+
+You could define more options to compiler by using a compiler.json file.
+
+### The `distrib` key
+
+```json
+{
+    "distrib": [
+        {
+            "name": "compiler",
+            "stub": "bin/compiler"
+        }
+    ]
+}
 ```
+
+- `name` will be the name of your phar archive. Exemple `compiler.phar`,
+- `stub` is the path who will be called when you will try to execute your archive as pphp script.
 
 ## Installation
 

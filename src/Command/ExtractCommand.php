@@ -13,7 +13,7 @@ class ExtractCommand extends Command
     protected function configure()
     {
         $this
-        	->setName('extract')
+            ->setName('extract')
             ->setDescription('Extract your project')
 
             ->addArgument('phar', InputArgument::REQUIRED, '')
