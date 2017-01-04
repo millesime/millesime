@@ -4,15 +4,13 @@
 require __DIR__.'/../vendor/autoload.php';
 
 use Symfony\Component\Console\Application;
+use Methylbro\Compiler\Compiler;
 use Methylbro\Compiler\Command\CompileCommand;
-use Methylbro\Compiler\Command\ExtractCommand;
 
 $application = new Application('@name@', '@distrib@-@version@');
 
-$compile = new CompileCommand();
-#$extract = new ExtractCommand();
-
+$compiler = new Compiler();
+$compile = new CompileCommand($compiler);
 $application->add($compile);
-#$application->add($extract);
 
 $application->run();
