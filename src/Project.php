@@ -6,6 +6,8 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Methylbro\Compiler\Compiler;
+use Symfony\Component\Config\Definition\Processor;
+use Methylbro\Compiler\Definition\CompilerConfiguration;
 
 class Project
 {
@@ -33,18 +35,27 @@ class Project
 
 	public function compile($path, $pharName, $manifest)
 	{
+        $extra = array('version' => 'dev-master');
+
         if (file_exists($path.DIRECTORY_SEPARATOR.$manifest)) {
             $this->logger->notice('Using '.$manifest);
             
-            $infos = json_decode(file_get_contents($path.DIRECTORY_SEPARATOR.$manifest));
-            $distribs = $infos->distrib;
+            $infos = (array) json_decode(file_get_contents($path.DIRECTORY_SEPARATOR.$manifest), true);
 
-            foreach ($distribs as $distrib) {
-                $this->logger->info('build '.$distrib->name);
-                if (!property_exists($distrib, 'version')) $distrib->version = $infos->version;
-                $distrib->app = $infos->name;
+            $processor = new Processor();
+            $configuration = new CompilerConfiguration();
+            $processedConfiguration = $processor->processConfiguration(
+                $configuration,
+                [$extra, $infos]
+            );
 
-                $this->compiler->execute($path, $distrib->name.'.phar', $distrib);
+            foreach ($processedConfiguration['distrib'] as $distrib) {
+                $this->logger->info('build '.$distrib['name']);
+
+                $infos = $processedConfiguration;
+                $infos['distrib'] = $distrib;
+
+                $this->compiler->execute($path, $distrib['name'].'.phar', $infos);
             }
 
         } else {

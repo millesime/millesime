@@ -29,7 +29,7 @@ class Compiler implements LoggerAwareInterface
 
         $stub = null;
         if ($infos) {
-            $stub = $infos->stub;
+            $stub = $infos['distrib']['stub'];
         }
 
         if (is_null($pharName)) {
@@ -66,14 +66,14 @@ class Compiler implements LoggerAwareInterface
             $file = str_replace($path, '', $fileInfo->getRelativePathname());
             $content = file_get_contents($file);
 
-            if ($file==$stub) {
+            if ($infos['distrib']['autoexec'] && $file==$stub) {
                 $content = str_replace('#!/usr/bin/env php'.PHP_EOL, null, $content);
             }
 
             if ($infos) {
-                $content = str_replace('@name@', $infos->app, $content);
-                $content = str_replace('@version@', $infos->version, $content);
-                $content = str_replace('@distrib@', $infos->name, $content);
+                $content = str_replace('@name@', $infos['name'], $content);
+                $content = str_replace('@version@', $infos['version'], $content);
+                $content = str_replace('@distrib@', $infos['distrib']['name'], $content);
             }
 
             $this->logger->debug('Add file: '.$file);
@@ -87,15 +87,19 @@ class Compiler implements LoggerAwareInterface
 
             $this->logger->warning('Setting up the loader or the bootstrap stub of the Phar archive');
 
-            $phar->setStub(
+			$code =            
 <<<STUB
-#!/usr/bin/env php
 <?php
 Phar::mapPhar('{$pharName}');
 require 'phar://{$pharName}/{$stub}';
 __HALT_COMPILER();
-STUB
-            );
+STUB;
+			if ($infos['distrib']['autoexec']) {
+				$code = '#!/usr/bin/env php'.PHP_EOL.$code;
+			}
+
+            $phar->setStub($code);
+
             $this->logger->notice($stub.' will be used as stub file');
         }
 

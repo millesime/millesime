@@ -18,6 +18,7 @@ You could define more options to compiler by using a compiler.json file.
 
 ```json
 {
+	"name": "Phar Compiler"
     "distrib": [
         {
             "name": "compiler",
@@ -33,5 +34,5 @@ You could define more options to compiler by using a compiler.json file.
 ## Installation
 
 ```
-bin/install
+bin/installer
 ```
