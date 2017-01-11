@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-bin/compiler compile ./ compiler.phar
+bin/compiler compile ./
 sudo cp compiler.phar /usr/local/bin/compiler
 chmod +x /usr/local/bin/compiler
 

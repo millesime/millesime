@@ -2,16 +2,15 @@
 
 namespace Methylbro\Compiler;
 
-use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Methylbro\Compiler\Compiler;
 use Symfony\Component\Config\Definition\Processor;
 use Methylbro\Compiler\Definition\CompilerConfiguration;
+use Symfony\Component\Finder\Finder;
 
 class Project
 {
-    private $compiler;
+    private $source;
+    private $manifest;
     private $logger;
 
     static public function guessPharName($path) {
@@ -22,9 +21,11 @@ class Project
         return $phar;
     }
 
-	public function __construct($compiler)
+	public function __construct($source, $dest =null, $manifest = 'compiler.json')
 	{
-        $this->compiler = $compiler;
+        $this->source = $source;
+        $this->dest = $dest ? $dest : $source;
+        $this->manifest = $manifest;
         $this->logger = new \Psr\Log\NullLogger();
 	}
 
@@ -33,14 +34,20 @@ class Project
         $this->logger = $logger;
     }
 
-	public function compile($path, $pharName, $manifest)
+	public function compile()
 	{
-        $extra = ['version' => $this->detectVersion($path)];
+        if (!\Phar::canWrite()) {
+            $this->logger->critical('You should update phar.readonly in your php.ini. http://php.net/phar.readonly');
+            return;
+        }
 
-        if (file_exists($path.DIRECTORY_SEPARATOR.$manifest)) {
-            $this->logger->notice('Using '.$manifest);
+        $extra = ['version' => $this->detectVersion($this->source)];
+
+        $manifest = realpath($this->source).DIRECTORY_SEPARATOR.$this->manifest;
+        if (file_exists($manifest)) {
+            $this->logger->notice('Using '.$this->manifest);
             
-            $infos = (array) json_decode(file_get_contents($path.DIRECTORY_SEPARATOR.$manifest), true);
+            $infos = (array) json_decode(file_get_contents($manifest), true);
 
             $processor = new Processor();
             $configuration = new CompilerConfiguration();
@@ -55,13 +62,11 @@ class Project
                 $infos = $processedConfiguration;
                 $infos['distrib'] = $distrib;
 
-                $this->compiler->execute($path, $distrib['name'].'.phar', $infos);
+                $this->dist($infos);
             }
 
         } else {
             $this->logger->error($manifest.' was not found');
-
-            $this->compiler->execute($path, $pharName);
         }
 	}
 
@@ -99,5 +104,88 @@ class Project
         }
 
         return $version;
+    }
+
+    private function dist($infos)
+    {
+        $stub = null;
+        if ($infos) {
+            $stub = $infos['distrib']['stub'];
+        }
+
+        $source = realpath($this->source);
+        $pharName = $infos['distrib']['name'].'.phar';
+        $pharFile = realpath($this->dest).DIRECTORY_SEPARATOR.$pharName;
+
+        if (file_exists($pharFile)) {
+            $this->logger->info('Removes existing '.$pharFile);
+            unlink($pharFile);
+        }
+
+        $this->logger->warning('Compile '.$this->source.' into '. $pharName);
+
+        $phar = new \Phar($pharFile);
+        
+        //$phar->setSignatureAlgorithm(\Phar::SHA1);
+
+        $phar->startBuffering();
+
+        $this->logger->debug('start buffering');
+
+        $finder = new Finder();
+        $finder
+            ->files()
+            ->ignoreVCS(true)
+            ->in($source)
+        ;
+
+        $this->logger->warning('Including '.count($finder).' files');
+
+        $i=0;
+        foreach ($finder as $fileInfo) {
+            $file = str_replace($source, '', $fileInfo->getRelativePathname());
+            $content = file_get_contents($file);
+
+            if ($infos['distrib']['autoexec'] && $file==$stub) {
+                $content = str_replace('#!/usr/bin/env php'.PHP_EOL, null, $content);
+            }
+
+            if ($infos) {
+                $content = str_replace('@name@', $infos['name'], $content);
+                $content = str_replace('@version@', $infos['version'], $content);
+                $content = str_replace('@distrib@', $infos['distrib']['name'], $content);
+            }
+
+            $this->logger->debug('Add file: '.$file);
+            $phar->addFromString($fileInfo->getRelativePathname(), $content);
+            $i++;
+        }
+        $this->logger->notice($i.' files included');
+
+        if ($stub) {
+            //if (!file_exists($path.'/'.$stub)) {}
+
+            $this->logger->warning('Setting up the loader or the bootstrap stub of the Phar archive');
+
+            $code =            
+<<<STUB
+<?php
+Phar::interceptFileFuncs();
+Phar::mapPhar('{$pharName}');
+require 'phar://{$pharName}/{$stub}';
+__HALT_COMPILER();
+STUB;
+            if ($infos['distrib']['autoexec']) {
+                $code = '#!/usr/bin/env php'.PHP_EOL.$code;
+            }
+
+            $phar->setStub($code);
+
+            $this->logger->notice($stub.' will be used as stub file');
+        }
+
+        $phar->stopBuffering();
+
+        $this->logger->info('created '.$pharFile);
     }
 }

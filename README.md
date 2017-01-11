@@ -1,6 +1,6 @@
 # Compiler
 
-Compile you PHP code into Phar archive.
+Compile you PHP application into Phar archive.
 
 ```
 cd /your/project/
@@ -10,7 +10,7 @@ compiler compile
 This program will creates a phar archive from your project.
 
 
-## Compiler.json project setup
+## `compiler.json` project setup
 
 You could define more options to compiler by using a compiler.json file.
 
@@ -18,7 +18,7 @@ You could define more options to compiler by using a compiler.json file.
 
 ```json
 {
-	"name": "Phar Compiler"
+	"name": "Phar Compiler",
     "distrib": [
         {
             "name": "compiler",
@@ -30,9 +30,3 @@ You could define more options to compiler by using a compiler.json file.
 
 - `name` will be the name of your phar archive. Exemple `compiler.phar`,
 - `stub` is the path who will be called when you will try to execute your archive as pphp script.
-
-## Installation
-
-```
-bin/installer
-```
