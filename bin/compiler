@@ -3,12 +3,25 @@
 
 require __DIR__.'/../vendor/autoload.php';
 
-use Symfony\Component\Console\Application;
-use Methylbro\Compiler\Command\CompileCommand;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\Definition;
 
-$application = new Application('@name@', '@distrib@-@version@');
+$container = new ContainerBuilder();
 
-$compile = new CompileCommand();
-$application->add($compile);
+$container->setParameter('application.name', '@name@');
+$container->setParameter('application.version', '@version@');
 
-$application->run();
+$container
+    ->register('application', 'Symfony\Component\Console\Application')
+    ->addArgument('%application.name%')
+    ->addArgument('%application.version%')
+
+    ->addMethodCall('add', [new Reference('application.compile')])
+;
+
+$container
+    ->register('application.compile', 'Methylbro\Compiler\Command\CompileCommand')
+;
+
+$container->get('application')->run();
