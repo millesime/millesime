@@ -13,14 +13,6 @@ class Project
     private $manifest;
     private $logger;
 
-    static public function guessPharName($path) {
-        $phar = explode(DIRECTORY_SEPARATOR, $path);
-        $phar = array_pop($phar);
-        $phar = sprintf('%s.phar', $phar);
-
-        return $phar;
-    }
-
 	public function __construct($source, $dest =null, $manifest = 'compiler.json')
 	{
         $this->source = $source;
@@ -36,37 +28,44 @@ class Project
 
 	public function compile()
 	{
+        /*
+         * booting compiler
+         */
         if (!\Phar::canWrite()) {
             $this->logger->critical('You should update phar.readonly in your php.ini. http://php.net/phar.readonly');
             return;
         }
 
-        $extra = ['version' => $this->detectVersion($this->source)];
-
         $manifest = realpath($this->source).DIRECTORY_SEPARATOR.$this->manifest;
-        if (file_exists($manifest)) {
-            $this->logger->notice('Using '.$this->manifest);
-            
-            $infos = (array) json_decode(file_get_contents($manifest), true);
-
-            $processor = new Processor();
-            $configuration = new CompilerConfiguration();
-            $processedConfiguration = $processor->processConfiguration(
-                $configuration,
-                [$extra, $infos]
-            );
-
-            foreach ($processedConfiguration['distrib'] as $distrib) {
-                $this->logger->info('build '.$distrib['name']);
-
-                $infos = $processedConfiguration;
-                $infos['distrib'] = $distrib;
-
-                $this->dist($infos);
-            }
-
-        } else {
+        if (!file_exists($manifest)) {
             $this->logger->error($manifest.' was not found');
+            return;
+        }
+        $this->logger->notice('Using '.$this->manifest);
+
+        /*
+         * resolve project configuration
+         */            
+        $extra = ['version' => $this->detectVersion($this->source)];
+        $infos = (array) json_decode(file_get_contents($manifest), true);
+
+        $processor = new Processor();
+        $configuration = new CompilerConfiguration();
+        $processedConfiguration = $processor->processConfiguration(
+            $configuration,
+            [$extra, $infos]
+        );
+
+        /*
+         * compile distributions
+         */
+        foreach ($processedConfiguration['distrib'] as $distrib) {
+            $this->logger->info('build '.$distrib['name']);
+
+            $infos = $processedConfiguration;
+            $infos['distrib'] = $distrib;
+
+            $this->dist($infos);
         }
 	}
 
@@ -124,14 +123,6 @@ class Project
 
         $this->logger->warning('Compile '.$this->source.' into '. $pharName);
 
-        $phar = new \Phar($pharFile);
-        
-        //$phar->setSignatureAlgorithm(\Phar::SHA1);
-
-        $phar->startBuffering();
-
-        $this->logger->debug('start buffering');
-
         $finder = new Finder();
         $finder
             ->files()
@@ -139,28 +130,16 @@ class Project
             ->in($source)
         ;
 
-        $this->logger->warning('Including '.count($finder).' files');
+        $this->logger->notice('Including '.count($finder).' files');
 
-        $i=0;
-        foreach ($finder as $fileInfo) {
-            $file = str_replace($source, '', $fileInfo->getRelativePathname());
-            $content = file_get_contents($file);
 
-            if ($infos['distrib']['autoexec'] && $file==$stub) {
-                $content = str_replace('#!/usr/bin/env php'.PHP_EOL, null, $content);
-            }
+        $phar = new \Phar($pharFile);
 
-            if ($infos) {
-                $content = str_replace('@name@', $infos['name'], $content);
-                $content = str_replace('@version@', $infos['version'], $content);
-                $content = str_replace('@distrib@', $infos['distrib']['name'], $content);
-            }
+        /*
+         * configure phar options
+         */
 
-            $this->logger->debug('Add file: '.$file);
-            $phar->addFromString($fileInfo->getRelativePathname(), $content);
-            $i++;
-        }
-        $this->logger->notice($i.' files included');
+        //$phar->setSignatureAlgorithm(\Phar::SHA1);
 
         if ($stub) {
             //if (!file_exists($path.'/'.$stub)) {}
@@ -183,6 +162,37 @@ STUB;
 
             $this->logger->notice($stub.' will be used as stub file');
         }
+
+
+        /**
+         * Buffering phar content
+         */
+        $phar->startBuffering();
+
+        $this->logger->debug('start buffering');
+
+
+        $i=0;
+        foreach ($finder as $fileInfo) {
+            $file = str_replace($source, '', $fileInfo->getRelativePathname());
+            $content = file_get_contents($file);
+
+            if ($infos['distrib']['autoexec'] && $file==$stub) {
+                $content = str_replace('#!/usr/bin/env php'.PHP_EOL, null, $content);
+            }
+
+            if ($infos) {
+                $content = str_replace('@name@', $infos['name'], $content);
+                $content = str_replace('@version@', $infos['version'], $content);
+                $content = str_replace('@distrib@', $infos['distrib']['name'], $content);
+            }
+
+            $this->logger->debug('Add file: '.$file);
+            $phar->addFromString($fileInfo->getRelativePathname(), $content);
+            $i++;
+        }
+        $this->logger->warning($i.' files included');
+
 
         $phar->stopBuffering();
 
