@@ -8,6 +8,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Methylbro\Compiler\Project;
+use Methylbro\Compiler\Compilation;
+use Methylbro\Compiler\DistributionBuilder;
 
 
 class CompileCommand extends Command
@@ -30,14 +32,8 @@ class CompileCommand extends Command
         $dest = $input->getOption('dest');
         $manifest = $input->getOption('manifest');
 
-        $project = new Project($source, $dest, $manifest);
-
-
-        $logger = new \Methylbro\Compiler\Log\OutputLogger($output);        
-
-        $project->setLogger($logger);
-
-
-        $project->compile();
+        $project = Project::manifest($source, $dest, $manifest);
+        $compilation = new Compilation($project);
+        $compilation->run(new DistributionBuilder());
     }
 }
