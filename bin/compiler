@@ -1,27 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-require __DIR__.'/../vendor/autoload.php';
-
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\DependencyInjection\Definition;
-
-$container = new ContainerBuilder();
-
-$container->setParameter('application.name', '@name@');
-$container->setParameter('application.version', '@version@');
-
-$container
-    ->register('application', 'Symfony\Component\Console\Application')
-    ->addArgument('%application.name%')
-    ->addArgument('%application.version%')
-
-    ->addMethodCall('add', [new Reference('application.compile')])
-;
-
-$container
-    ->register('application.compile', 'Methylbro\Compiler\Command\CompileCommand')
-;
+$loarder = require __DIR__.'/../vendor/autoload.php';
+$container = require __DIR__.'/../src/bootstrap.php';
 
 $container->get('application')->run();

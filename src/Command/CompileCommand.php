@@ -8,12 +8,20 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Methylbro\Compiler\Project;
-use Methylbro\Compiler\Compilation;
+use Methylbro\Compiler\CompilationFactory;
 use Methylbro\Compiler\DistributionBuilder;
 
 
 class CompileCommand extends Command
 {
+    public function __construct(CompilationFactory $compilation, DistributionBuilder $distribution)
+    {
+        parent::__construct();
+
+        $this->compilation = $compilation;
+        $this->distribution = $distribution;
+    }
+
     protected function configure()
     {
         $this
@@ -32,8 +40,6 @@ class CompileCommand extends Command
         $dest = $input->getOption('dest');
         $manifest = $input->getOption('manifest');
 
-        $project = Project::manifest($source, $dest, $manifest);
-        $compilation = new Compilation($project);
-        $compilation->run(new DistributionBuilder());
+        $this->compilation->create(Project::manifest($source, $dest, $manifest))->run($this->distribution);
     }
 }
