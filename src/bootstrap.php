@@ -29,6 +29,11 @@ $container
     ->addArgument('%application.version%')
 
     ->addMethodCall('add', [new Reference('application.compile')])
+    ->addMethodCall('add', [new Reference('application.init')])
+;
+
+$container
+    ->register('application.init', 'Methylbro\Compiler\Command\InitCommand')
 ;
 
 $container

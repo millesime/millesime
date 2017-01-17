@@ -4,6 +4,7 @@ Compile you PHP application into Phar archive.
 
 ```
 cd /your/project/
+compiler init
 compiler compile
 ```
 
