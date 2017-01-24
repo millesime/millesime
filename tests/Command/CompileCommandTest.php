@@ -1,28 +1,28 @@
 <?php
 
-namespace Methylbro\Compiler\Command\Tests;
+namespace Millesime\Compiler\Command\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Methylbro\Compiler\Command\CompileCommand;
+use Millesime\Compiler\Command\CompileCommand;
 
 class CompileCommandTest extends TestCase
 {
     public function testCompileCommand()
     {
         $factory = $this
-            ->getMockBuilder('Methylbro\Compiler\CompilationFactory')
+            ->getMockBuilder('Millesime\Compiler\CompilationFactory')
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock()
         ;
         $compilation = $this
-            ->getMockBuilder('Methylbro\Compiler\Compilation')
+            ->getMockBuilder('Millesime\Compiler\Compilation')
             ->disableOriginalConstructor()
             ->setMethods(['run'])
             ->getMock()
         ;
         $distribution = $this
-            ->getMockBuilder('Methylbro\Compiler\DistributionBuilder')
+            ->getMockBuilder('Millesime\Compiler\DistributionBuilder')
             ->getMock()
         ;
 

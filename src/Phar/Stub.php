@@ -1,6 +1,6 @@
 <?php
 
-namespace Methylbro\Compiler\Phar;
+namespace Millesime\Compiler\Phar;
 
 class Stub
 {

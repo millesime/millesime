@@ -1,5 +1,5 @@
 {
-    "name": "Compiler",
+    "name": "Millesime",
     "authors": [
         {
             "name": "Methylbro",
@@ -8,8 +8,8 @@
     ],
     "distrib": [
         {
-            "name": "compiler",
-            "stub": "bin/compiler"
+            "name": "millesime",
+            "stub": "bin/millesime"
         }
     ]
 }

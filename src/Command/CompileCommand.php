@@ -1,15 +1,15 @@
 <?php
 
-namespace Methylbro\Compiler\Command;
+namespace Millesime\Compiler\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Methylbro\Compiler\Project;
-use Methylbro\Compiler\CompilationFactory;
-use Methylbro\Compiler\DistributionBuilder;
+use Millesime\Compiler\Project;
+use Millesime\Compiler\CompilationFactory;
+use Millesime\Compiler\DistributionBuilder;
 
 
 class CompileCommand extends Command
@@ -29,7 +29,7 @@ class CompileCommand extends Command
             ->setDescription('Compile your project in phar')
 
             ->addArgument('source', InputArgument::OPTIONAL, 'source of your app', getcwd())
-            ->addOption('manifest', 'm', InputOption::VALUE_OPTIONAL, 'Wich manifest file you will use', 'compiler.json')
+            ->addOption('manifest', 'm', InputOption::VALUE_OPTIONAL, 'Wich manifest file you will use', 'millesime.json')
             ->addOption('dest', 'd', InputOption::VALUE_OPTIONAL, 'destination', getcwd())
         ;
     }

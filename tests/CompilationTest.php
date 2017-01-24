@@ -1,11 +1,11 @@
 <?php
 
-namespace Methylbro\Compiler\Tests;
+namespace Millesime\Compiler\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Methylbro\Compiler\Compilation;
-use Methylbro\Compiler\Project;
-use Methylbro\Compiler\DistributionBuilder;
+use Millesime\Compiler\Compilation;
+use Millesime\Compiler\Project;
+use Millesime\Compiler\DistributionBuilder;
 
 class CompilationTest extends TestCase
 {
@@ -14,7 +14,7 @@ class CompilationTest extends TestCase
         $project = new Project(__DIR__, null, ['name'=>'foobar', 'distrib' => [['name' => 'foo'], ['name' => 'bar']]]);
 
         $distribution = $this
-            ->getMockBuilder('Methylbro\Compiler\DistributionBuilder')
+            ->getMockBuilder('Millesime\Compiler\DistributionBuilder')
             ->disableOriginalConstructor()
             ->getMock()
         ;

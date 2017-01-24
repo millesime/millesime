@@ -1,10 +1,10 @@
 <?php
 
-namespace Methylbro\Compiler;
+namespace Millesime\Compiler;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Config\Definition\Processor;
-use Methylbro\Compiler\Definition\CompilerConfiguration;
+use Millesime\Compiler\Definition\CompilerConfiguration;
 
 class Project
 {
@@ -54,7 +54,7 @@ class Project
 
     public function getConfig()
     {
-        $git = new \Methylbro\Compiler\Git\Version($this->source);
+        $git = new \Millesime\Compiler\Git\Version($this->source);
 
         $processor = new Processor();
         $configuration = $processor->processConfiguration(

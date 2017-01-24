@@ -1,9 +1,9 @@
 <?php
 
-namespace Methylbro\Compiler\Phar\Tests;
+namespace Millesime\Compiler\Phar\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Methylbro\Compiler\Phar\Factory;
+use Millesime\Compiler\Phar\Factory;
 
 class FactoryTest extends TestCase
 {

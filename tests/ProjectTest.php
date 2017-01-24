@@ -1,9 +1,9 @@
 <?php
 
-namespace Methylbro\Compiler\Tests;
+namespace Millesime\Compiler\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Methylbro\Compiler\Project;
+use Millesime\Compiler\Project;
 
 class ProjectTest extends TestCase
 {
@@ -25,12 +25,12 @@ class ProjectTest extends TestCase
 
     public function testManifest()
     {
-        $manifest = 'compiler.json';
+        $manifest = 'millesime.json';
         $source = __DIR__.'/../';
         $project = Project::manifest($source, null, $manifest);
 
         $config = $project->getConfig();
 
-        $this->assertEquals('Compiler', $config['name']);
+        $this->assertEquals('Millesime', $config['name']);
     }
 }

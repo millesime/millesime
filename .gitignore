@@ -1,4 +1,4 @@
 .DS_Store
 /vendor/
 /composer.lock
-compiler.phar
+millesime.phar

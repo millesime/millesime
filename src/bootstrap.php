@@ -6,13 +6,13 @@ use Symfony\Component\DependencyInjection\Definition;
 
 $container = new ContainerBuilder();
 
-$container->setParameter('distribution.class', 'Methylbro\Compiler\DistributionBuilder');
-$container->setParameter('compilation.class', 'Methylbro\Compiler\Compilation');
-$container->setParameter('compilation.factory.class', 'Methylbro\Compiler\CompilationFactory');
+$container->setParameter('distribution.class', 'Millesime\Compiler\DistributionBuilder');
+$container->setParameter('compilation.class', 'Millesime\Compiler\Compilation');
+$container->setParameter('compilation.factory.class', 'Millesime\Compiler\CompilationFactory');
 $container->setParameter('application.class', 'Symfony\Component\Console\Application');
 $container->setParameter('application.name', '@name@');
 $container->setParameter('application.version', '@version@');
-$container->setParameter('application.compile.class', 'Methylbro\Compiler\Command\CompileCommand');
+$container->setParameter('application.compile.class', 'Millesime\Compiler\Command\CompileCommand');
 
 $container
     ->register('distribution', '%distribution.class%')
@@ -33,7 +33,7 @@ $container
 ;
 
 $container
-    ->register('application.init', 'Methylbro\Compiler\Command\InitCommand')
+    ->register('application.init', 'Millesime\Compiler\Command\InitCommand')
 ;
 
 $container

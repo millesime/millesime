@@ -1,17 +1,17 @@
 <?php
 
-namespace Methylbro\Compiler\Tests;
+namespace Millesime\Compiler\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Methylbro\Compiler\Compilation;
-use Methylbro\Compiler\CompilationFactory;
+use Millesime\Compiler\Compilation;
+use Millesime\Compiler\CompilationFactory;
 
 class CompilationFactoryTest extends TestCase
 {
     public function testCompilationFactory()
     {
         $project = $this
-            ->getMockBuilder('Methylbro\Compiler\Project')
+            ->getMockBuilder('Millesime\Compiler\Project')
             ->disableOriginalConstructor()
             ->getMock()
         ;

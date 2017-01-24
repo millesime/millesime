@@ -1,6 +1,6 @@
 <?php
 
-namespace Methylbro\Compiler\Git;
+namespace Millesime\Compiler\Git;
 
 class Version
 {

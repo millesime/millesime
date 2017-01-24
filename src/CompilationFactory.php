@@ -1,6 +1,6 @@
 <?php
 
-namespace Methylbro\Compiler;
+namespace Millesime\Compiler;
 
 class CompilationFactory
 {

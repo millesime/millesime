@@ -1,6 +1,6 @@
 <?php
 
-namespace Methylbro\Compiler;
+namespace Millesime\Compiler;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -17,10 +17,10 @@ class DistributionBuilder
         }
 
         $this->steps = [
-            new \Methylbro\Compiler\Phar\Unlink(),
-            new \Methylbro\Compiler\Phar\Factory(),
-            new \Methylbro\Compiler\Phar\Stub(),
-            new \Methylbro\Compiler\Phar\Buffering(
+            new \Millesime\Compiler\Phar\Unlink(),
+            new \Millesime\Compiler\Phar\Factory(),
+            new \Millesime\Compiler\Phar\Stub(),
+            new \Millesime\Compiler\Phar\Buffering(
                 new \Symfony\Component\Finder\Finder(),
                 new \Methylbro\File\FileContents()
             ),

@@ -1,5 +1,5 @@
 {
-    "name": "methylbro/compiler",
+    "name": "millesime/millesime",
     "authors": [
         {
             "name": "Methylbro",
@@ -17,7 +17,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Methylbro\\Compiler\\": "src/"
+            "Millesime\\Compiler\\": "src/"
         }
     },
     "require-dev": {

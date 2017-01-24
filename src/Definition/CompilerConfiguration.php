@@ -1,6 +1,6 @@
 <?php
 
-namespace Methylbro\Compiler\Definition;
+namespace Millesime\Compiler\Definition;
 
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;

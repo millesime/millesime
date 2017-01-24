@@ -1,10 +1,10 @@
 <?php
 
-namespace Methylbro\Compiler\Phar\Tests;
+namespace Millesime\Compiler\Phar\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
-use Methylbro\Compiler\Phar\Buffering;
+use Millesime\Compiler\Phar\Buffering;
 use Methylbro\File\FileContents;
 
 class BufferingTest extends TestCase
