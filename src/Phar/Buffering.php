@@ -3,25 +3,31 @@
 namespace Methylbro\Compiler\Phar;
 
 use Symfony\Component\Finder\Finder;
+use Methylbro\File\FileContents;
 
 class Buffering
 {
-    public function __construct()
-    {}
+    private $finder;
+    private $filecontents;
 
-    public function execute($phar, array $options)
+    public function __construct(Finder $finder, FileContents $filecontents)
     {
-        $finder = new Finder();
-        $finder
+        $this->finder = $finder;
+        $this->filecontents = $filecontents;
+    }
+
+    public function execute(\Phar $phar, array $options)
+    {
+        $this->finder
             ->files()
             ->ignoreVCS(true)
             ->in($options['source'])
         ;
 
         $phar->startBuffering();
-        foreach ($finder as $fileInfo) {
+        foreach ($this->finder as $fileInfo) {
             $file = str_replace($options['source'], '', $fileInfo->getRelativePathname());
-            $content = file_get_contents($file);
+            $content = $this->filecontents->get($file);
 
             if ($options['distrib']['autoexec'] && $file==$options['distrib']['stub']) {
                 $content = str_replace('#!/usr/bin/env php'.PHP_EOL, null, $content);

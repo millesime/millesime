@@ -4,10 +4,7 @@ namespace Methylbro\Compiler\Phar;
 
 class Stub
 {
-    public function __construct()
-    {}
-
-    public function execute($phar, array $options)
+    public function execute(\Phar $phar, array $options)
     {
         $pharName = $options['distrib']['name'].'.phar';
 

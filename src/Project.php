@@ -18,7 +18,7 @@ class Project
         $manifest_path = realpath($source).DIRECTORY_SEPARATOR.$manifest;
 
         if (!file_exists($manifest_path)) {
-            throw new Exception($manifest.' was not found');
+            throw new \Exception($manifest.' was not found');
         }
 
         $config = (array) json_decode(file_get_contents($manifest_path), true);
@@ -50,11 +50,6 @@ class Project
     public function getDestination()
     {
         return $this->dest;
-    }
-
-    public function getManifest()
-    {
-        return $this->manifest;
     }
 
     public function getConfig()

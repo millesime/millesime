@@ -13,7 +13,7 @@ class Compilation
         }
 
         if (!\Phar::canWrite()) {
-            throw new Exception('You should update phar.readonly in your php.ini. http://php.net/phar.readonly');
+            throw new \Exception('You should update phar.readonly in your php.ini. http://php.net/phar.readonly');
         }
 
         $this->project = $project;

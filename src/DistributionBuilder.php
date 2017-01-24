@@ -20,7 +20,10 @@ class DistributionBuilder
             new \Methylbro\Compiler\Phar\Unlink(),
             new \Methylbro\Compiler\Phar\Factory(),
             new \Methylbro\Compiler\Phar\Stub(),
-            new \Methylbro\Compiler\Phar\Buffering(),
+            new \Methylbro\Compiler\Phar\Buffering(
+                new \Symfony\Component\Finder\Finder(),
+                new \Methylbro\File\FileContents()
+            ),
         ];
     }
 
