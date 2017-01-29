@@ -2,44 +2,46 @@
 
 namespace Millesime\Compiler\Phar;
 
-use Symfony\Component\Finder\Finder;
+use Schnittstabil\FinderByConfig\FinderByConfig;
 use Methylbro\File\FileContents;
+use Symfony\Component\Finder\SplFileInfo;
 
 class Buffering
 {
-    private $finder;
     private $filecontents;
 
-    public function __construct(Finder $finder, FileContents $filecontents)
+    public function __construct(FileContents $filecontents)
     {
-        $this->finder = $finder;
         $this->filecontents = $filecontents;
     }
 
     public function execute(\Phar $phar, array $options)
     {
-        $this->finder
-            ->files()
-            ->ignoreVCS(true)
-            ->in($options['source'])
-        ;
+        $finder = FinderByConfig::createFinder($options['finder']);
 
         $phar->startBuffering();
-        foreach ($this->finder as $fileInfo) {
-            $file = str_replace($options['source'], '', $fileInfo->getRelativePathname());
-            $content = $this->filecontents->get($file);
+        /** @var SplFileInfo $fileInfo */
+        foreach ($finder as $fileInfo) {
+            $file    = $fileInfo->getRelativePathname();
+            $content = $fileInfo->getContents();
 
-            if ($options['distrib']['autoexec'] && $file==$options['distrib']['stub']) {
+            if ($options['distrib']['autoexec'] && $file === $options['distrib']['stub']) {
                 $content = str_replace('#!/usr/bin/env php'.PHP_EOL, null, $content);
             }
 
             if ($options) {
-                $content = str_replace('@name@', $options['name'], $content);
-                $content = str_replace('@version@', $options['version'], $content);
-                $content = str_replace('@distrib@', $options['distrib']['name'], $content);
+                $content = str_replace([
+                    '@name@',
+                    '@version@',
+                    '@distrib@'
+                ], [
+                    $options['name'],
+                    $options['version'],
+                    $options['distrib']['name']
+                ], $content);
             }
 
-            $phar->addFromString($fileInfo->getRelativePathname(), $content);
+            $phar->addFromString($file, $content);
         }
         $phar->stopBuffering();
 

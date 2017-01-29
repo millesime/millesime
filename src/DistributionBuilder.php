@@ -21,7 +21,6 @@ class DistributionBuilder
             new \Millesime\Compiler\Phar\Factory(),
             new \Millesime\Compiler\Phar\Stub(),
             new \Millesime\Compiler\Phar\Buffering(
-                new \Symfony\Component\Finder\Finder(),
                 new \Methylbro\File\FileContents()
             ),
         ];
@@ -39,6 +38,9 @@ class DistributionBuilder
                 'name' => 'project-distrib',
                 'stub' => null,
                 'autoexec' => true,
+            ],
+            'finder' => [
+                'in' => getcwd(),
             ],
         ]);
     }

@@ -9,7 +9,17 @@
     "distrib": [
         {
             "name": "millesime",
-            "stub": "bin/millesime"
+            "stub": "bin/millesime.php"
         }
-    ]
+    ],
+    "finder": {
+        "in": ["."],
+        "name": ["*.php"],
+        "notName": ["*Test.php"],
+        "exclude": ["tests", "doc", "bin/installer"],
+        "ignoreDotFiles": true,
+        "ignoreVCS": true,
+        "followLinks": false,
+        "ignoreUnreadableDirs": false
+    }
 }
