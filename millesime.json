@@ -9,12 +9,12 @@
     "distrib": [
         {
             "name": "millesime",
-            "stub": "bin/millesime.php"
+            "stub": "bin/millesime"
         }
     ],
     "finder": {
         "in": ["."],
-        "name": ["*.php"],
+        "name": ["*.php", "millesime"],
         "notName": ["*Test.php"],
         "exclude": ["tests", "doc", "bin/installer"],
         "ignoreDotFiles": true,
