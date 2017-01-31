@@ -17,7 +17,7 @@ class Buffering
 
     public function execute(\Phar $phar, array $options)
     {
-        $finder = FinderByConfig::createFinder($options['finder']);
+        $finder = FinderByConfig::createFinder($options['distrib']['finder']);
 
         $phar->startBuffering();
         /** @var SplFileInfo $fileInfo */

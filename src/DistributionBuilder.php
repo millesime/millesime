@@ -38,9 +38,9 @@ class DistributionBuilder
                 'name' => 'project-distrib',
                 'stub' => null,
                 'autoexec' => true,
-            ],
-            'finder' => [
-                'in' => getcwd(),
+                'finder' => [
+                    'in' => getcwd(),
+                ],
             ],
         ]);
     }

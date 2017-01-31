@@ -26,7 +26,15 @@ class Project
         if (!$logger) {
             $logger = new \Psr\Log\NullLogger();
         }
-        $logger->debug("Loaded project configuration from {$manifest_path}", $config);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $logger->critical("Error parsing configuration file {$manifest_path}");
+
+            throw new \Exception("Error parsing configuration file {$manifest_path}");
+        } else {
+            $logger->debug("Loaded project configuration from {$manifest_path}", $config);
+        }
+
 
         return new self($source, $dest, $config, $logger);
     }
