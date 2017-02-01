@@ -2,7 +2,7 @@
 
 namespace Millesime\Compiler\Phar;
 
-use Schnittstabil\FinderByConfig\FinderByConfig;
+use Millesime\Compiler\Finder\FinderGenerator;
 use Methylbro\File\FileContents;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -10,14 +10,15 @@ class Buffering
 {
     private $filecontents;
 
-    public function __construct(FileContents $filecontents)
+    public function __construct(FinderGenerator $finderGenerator, FileContents $filecontents)
     {
-        $this->filecontents = $filecontents;
+        $this->finderGenerator = $finderGenerator;
+        $this->filecontents    = $filecontents;
     }
 
     public function execute(\Phar $phar, array $options)
     {
-        $finder = FinderByConfig::createFinder($options['distrib']['finder']);
+        $finder = $this->finderGenerator->finderFromConfig($options['distrib']['finder']);
 
         $phar->startBuffering();
         /** @var SplFileInfo $fileInfo */

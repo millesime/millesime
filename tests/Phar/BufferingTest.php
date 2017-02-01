@@ -2,6 +2,7 @@
 
 namespace Millesime\Compiler\Phar\Tests;
 
+use Millesime\Compiler\Finder\FinderGenerator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
 use Millesime\Compiler\Phar\Buffering;
@@ -18,7 +19,10 @@ class BufferingTest extends TestCase
             'distrib' => [
                 'name' => 'test',
                 'autoexec' => true,
-                'stub' => 'foobar'
+                'stub' => 'foobar',
+                'finder' => [
+                    'in' => 'somewhere/'
+                ]
             ]
         ];
 
@@ -36,19 +40,32 @@ class BufferingTest extends TestCase
         $file = $this
             ->getMockBuilder(\SplFileInfo::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getRelativePathname'])
+            ->setMethods(['getRelativePathname', 'getContents'])
             ->getMock()
         ;
 
         $file->method('getRelativePathname')->willReturn($options['source'].'foobar');
+        $file->method('getContents')->willReturn('bar');
 
         $iterator = new \ArrayIterator();
         $iterator->append($file);
 
         $finder->method('files')->willReturn($finder);
         $finder->method('ignoreVCS')->willReturn($finder);
-        $finder->method('in')->with($this->equalTo($options['source']))->willReturn($finder);
+        $finder->method('in')->with($this->equalTo($options['distrib']['finder']['in']))->willReturn($finder);
         $finder->method('getIterator')->willReturn($iterator);
+
+        $finderGenerator = $this
+            ->getMockBuilder(FinderGenerator::class)
+            ->setMethods(['finderFromConfig'])
+            ->getMock()
+        ;
+
+        $finderGenerator
+            ->method('finderFromConfig')
+            ->with($options['distrib']['finder'])
+            ->willReturn($finder)
+        ;
 
         $phar = $this
             ->getMockBuilder('Phar')
@@ -58,7 +75,7 @@ class BufferingTest extends TestCase
 
         $phar->expects($this->once())->method('addFromString')->with($this->equalTo('somewhere/foobar'));
 
-        $buffering = new Buffering($finder, $filecontent);
+        $buffering = new Buffering($finderGenerator, $filecontent);
         $buffering->execute($phar, $options);
     }
 }

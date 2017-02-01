@@ -17,7 +17,7 @@ class Project
     {
         $manifest_path = realpath($source).DIRECTORY_SEPARATOR.$manifest;
 
-        if (!file_exists($manifest_path)) {
+        if (!is_file($manifest_path)) {
             throw new \Exception($manifest.' was not found');
         }
 

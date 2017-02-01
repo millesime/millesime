@@ -14,11 +14,21 @@ use Millesime\Compiler\DistributionBuilder;
 
 class CompileCommand extends Command
 {
+    /**
+     * @var CompilationFactory
+     */
+    private $compilation;
+
+    /**
+     * @var DistributionBuilder
+     */
+    private $distribution;
+
     public function __construct(CompilationFactory $compilation, DistributionBuilder $distribution)
     {
         parent::__construct();
 
-        $this->compilation = $compilation;
+        $this->compilation  = $compilation;
         $this->distribution = $distribution;
     }
 
@@ -36,10 +46,12 @@ class CompileCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $source = $input->getArgument('source');
-        $dest = $input->getOption('dest');
+        $source   = $input->getArgument('source');
+        $dest     = $input->getOption('dest');
         $manifest = $input->getOption('manifest');
 
         $this->compilation->create(Project::manifest($source, $dest, $manifest))->run($this->distribution);
+        
+        $output->writeln('<info>Compilation completed</info>');
     }
 }
