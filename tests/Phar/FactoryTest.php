@@ -15,6 +15,7 @@ class FactoryTest extends TestCase
                 'name' => 'test',
             ]
         ];
+
         $factory = new Factory();
         $phar = $factory->execute(null, $options);
 

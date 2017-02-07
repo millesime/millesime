@@ -4,6 +4,7 @@ namespace Millesime\Compiler\Command\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Millesime\Compiler\Command\CompileCommand;
+use Symfony\Component\Console\Tester\CommandTester;
 
 class CompileCommandTest extends TestCase
 {
@@ -21,7 +22,7 @@ class CompileCommandTest extends TestCase
             ->setMethods(['run'])
             ->getMock()
         ;
-        $distribution = $this
+        $distributionBuilder = $this
             ->getMockBuilder('Millesime\Compiler\DistributionBuilder')
             ->getMock()
         ;
@@ -30,21 +31,13 @@ class CompileCommandTest extends TestCase
             ->method('create')
             ->willReturn($compilation)
         ;
-        $compilation
-            ->method('run')
-            ->with($distribution)
-        ;
 
-        $input = $this
-            ->getMockBuilder('Symfony\Component\Console\Input\InputInterface')
-            ->getMock()
-        ;
-        $output = $this
-            ->getMockBuilder('Symfony\Component\Console\Output\OutputInterface')
-            ->getMock()
-        ;
+        $command = new CompileCommand($factory, $distributionBuilder);
 
-        $command = new CompileCommand($factory, $distribution);
-        $command->run($input, $output);
+        $commandTester = new CommandTester($command);
+        $commandTester->execute([], []);
+
+        $output = $commandTester->getDisplay();
+        $this->assertContains('Compilation completed', $output);
     }
 }

@@ -18,11 +18,26 @@ class StubTest extends TestCase
                 'autoexec' => false,
             ]
         ];
-        $factory = new Factory();
-        $stub = new stub();
-        $phar = $factory->execute(null, $options);
+
+        $stub = new Stub();
+
+        $phar = $this
+            ->getMockBuilder('Phar')
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+
         $phar = $stub->execute($phar, $options);
 
         $this->assertEquals('', $phar->getStub());
+    }
+
+    public function tearDown()
+    {
+        if (is_file('test.phar')) {
+            unlink('test.phar');
+        }
+
+        parent::tearDown();
     }
 }
