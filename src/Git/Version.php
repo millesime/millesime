@@ -4,9 +4,7 @@ namespace Millesime\Compiler\Git;
 
 class Version
 {
-    private $version;
-
-    public function __construct($path)
+    public function resolve($path)
     {
         $version = 'dev-master';
         $gitdir = $path.DIRECTORY_SEPARATOR.'.git';
@@ -39,11 +37,6 @@ class Version
             }
         }
 
-        $this->version = $version;
-    }
-
-    public function getVersion()
-    {
-        return $this->version;
+        return $version;
     }
 }

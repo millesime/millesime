@@ -15,13 +15,45 @@ $container->setParameter('application.version', '@version@');
 $container->setParameter('application.compile.class', 'Millesime\Compiler\Command\CompileCommand');
 
 $container
-    ->register('distribution', '%distribution.class%')
+    ->register('distribution.builder', '%distribution.class%')
+;
+
+$container
+    ->register('project.factory', 'Millesime\Compiler\ProjectFactory')
+    ->addArgument(new Reference('logger'))
 ;
 
 $container
     ->register('compilation.factory', '%compilation.factory.class%')
     ->addArgument('%compilation.class%')
+    ->addArgument(new Reference('logger'))
 ;
+
+$container
+    ->register('compiler', 'Millesime\Compiler\Compiler')
+    ->addArgument(new Reference('project.factory'))
+    ->addArgument(new Reference('compilation.factory'))
+    ->addArgument(new Reference('distribution.builder'))
+;
+
+
+$container
+    ->register('logger', 'Monolog\Logger')
+    ->addArgument('%application.name%')
+
+    ->addMethodCall('pushHandler', [new Reference('logger.handler')])
+;
+$container
+    ->register('logger.handler', 'Monolog\Handler\ErrorLogHandler')
+
+    ->addMethodCall('setFormatter', [new Reference('logger.formatter')])
+;
+$container
+    ->register('logger.formatter', 'Monolog\Formatter\LineFormatter')
+    ->addArgument("%%message%%")
+;
+
+
 
 $container
     ->register('application', '%application.class%')
@@ -38,8 +70,7 @@ $container
 
 $container
     ->register('application.compile', '%application.compile.class%')
-    ->addArgument(new Reference('compilation.factory'))
-    ->addArgument(new Reference('distribution'))
+    ->addArgument(new Reference('compiler'))
 ;
 
 return $container;

@@ -13,8 +13,8 @@
         "symfony/config": "^3.2",
         "symfony/dependency-injection": "^3.2",
         "symfony/options-resolver": "^3.2",
-        "methylbro/filecontents": "^1.0",
-        "schnittstabil/finder-by-config": "^0.1.1"
+        "schnittstabil/finder-by-config": "^0.1.1",
+        "monolog/monolog": "^1.23"
     },
     "autoload": {
         "psr-4": {

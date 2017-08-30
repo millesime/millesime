@@ -7,29 +7,20 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Millesime\Compiler\Project;
+use Millesime\Compiler\ProjectFactory;
 use Millesime\Compiler\CompilationFactory;
 use Millesime\Compiler\DistributionBuilder;
 
 
 class CompileCommand extends Command
 {
-    /**
-     * @var CompilationFactory
-     */
-    private $compilation;
+    private $compiler;
 
-    /**
-     * @var DistributionBuilder
-     */
-    private $distribution;
-
-    public function __construct(CompilationFactory $compilation, DistributionBuilder $distribution)
+    public function __construct($compiler)
     {
         parent::__construct();
 
-        $this->compilation  = $compilation;
-        $this->distribution = $distribution;
+        $this->compiler  = $compiler;
     }
 
     protected function configure()
@@ -50,8 +41,8 @@ class CompileCommand extends Command
         $dest     = $input->getOption('dest');
         $manifest = $input->getOption('manifest');
 
-        $this->compilation->create(Project::manifest($source, $dest, $manifest))->run($this->distribution);
+        $this->compiler->execute($source, $dest, $manifest);
         
-        $output->writeln('<info>Compilation completed</info>');
+        $output->writeln("Compilation completed");
     }
 }

@@ -18,10 +18,14 @@ class CompilationTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock()
         ;
-//        $distribution->method('build')->willReturn($this->onConsecutiveCalls('foo', 'bar'));
+        $distribution
+            ->method('build')
+            ->willReturn('phar')
+        ;
 
         $compilation = new Compilation($project);
-        $compilation->run($distribution);
+        $result = $compilation->run($distribution);
 
+        $this->assertEquals(['foo' => 'phar', 'bar' => 'phar'], $result);
     }
 }

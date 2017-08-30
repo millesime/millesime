@@ -5,6 +5,7 @@ namespace Millesime\Compiler;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Millesime\Compiler\Definition\CompilerConfiguration;
+use Millesime\Compiler\Git\Version;
 
 class Project
 {
@@ -12,32 +13,6 @@ class Project
     private $dest;
     private $config;
     private $logger;
-
-    static public function manifest($source, $dest, $manifest, $logger = null)
-    {
-        $manifest_path = realpath($source).DIRECTORY_SEPARATOR.$manifest;
-
-        if (!is_file($manifest_path)) {
-            throw new \Exception($manifest.' was not found');
-        }
-
-        $config = (array) json_decode(file_get_contents($manifest_path), true);
-
-        if (!$logger) {
-            $logger = new \Psr\Log\NullLogger();
-        }
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            $logger->critical("Error parsing configuration file {$manifest_path}");
-
-            throw new \Exception("Error parsing configuration file {$manifest_path}");
-        } else {
-            $logger->debug("Loaded project configuration from {$manifest_path}", $config);
-        }
-
-
-        return new self($source, $dest, $config, $logger);
-    }
 
     public function __construct($source, $dest = null, array $config = [], LoggerInterface $logger = null)
     {
@@ -62,13 +37,13 @@ class Project
 
     public function getConfig()
     {
-        $git = new \Millesime\Compiler\Git\Version($this->source);
-
+        $version = new Version();
         $processor = new Processor();
+
         $configuration = $processor->processConfiguration(
             new CompilerConfiguration(),
             [
-                ['version' => $git->getVersion()],
+                ['version' => $version->resolve($this->source)],
                 $this->config
             ]
         );

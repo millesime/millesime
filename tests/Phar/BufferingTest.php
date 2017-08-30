@@ -63,7 +63,7 @@ class BufferingTest extends TestCase
 
         $finderGenerator
             ->method('finderFromConfig')
-            ->with($options['distrib']['finder'])
+            ->with($this->equalTo($options))
             ->willReturn($finder)
         ;
 

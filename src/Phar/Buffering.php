@@ -3,26 +3,24 @@
 namespace Millesime\Compiler\Phar;
 
 use Millesime\Compiler\Finder\FinderGenerator;
-use Methylbro\File\FileContents;
 use Symfony\Component\Finder\SplFileInfo;
 
 class Buffering
 {
-    private $filecontents;
+    private $finderGenerator;
 
-    public function __construct(FinderGenerator $finderGenerator, FileContents $filecontents)
+    public function __construct(FinderGenerator $finderGenerator)
     {
         $this->finderGenerator = $finderGenerator;
-        $this->filecontents    = $filecontents;
     }
 
     public function execute(\Phar $phar, array $options)
     {
-        $finder = $this->finderGenerator->finderFromConfig($options['distrib']['finder']);
+        $finder = $this->finderGenerator->finderFromConfig($options);
 
         $phar->startBuffering();
-        /** @var SplFileInfo $fileInfo */
         foreach ($finder as $fileInfo) {
+
             $file    = $fileInfo->getRelativePathname();
             $content = $fileInfo->getContents();
 

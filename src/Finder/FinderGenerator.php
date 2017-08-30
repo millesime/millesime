@@ -12,6 +12,16 @@ class FinderGenerator extends FinderByConfig
      */
     public function finderFromConfig($config)
     {
-        return parent::createFinder($config);
+    	$finder = $config['distrib']['finder'];
+
+    	$dirs = $finder['in'];
+
+    	$finder['in'] = [];
+
+    	foreach ($dirs as $dir) {
+	    	$finder['in'][] = realpath($config['source'].DIRECTORY_SEPARATOR.$dir);
+    	}
+
+        return parent::createFinder($finder);
     }
 }

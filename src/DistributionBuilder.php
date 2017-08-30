@@ -21,8 +21,7 @@ class DistributionBuilder
             new \Millesime\Compiler\Phar\Factory(),
             new \Millesime\Compiler\Phar\Stub(),
             new \Millesime\Compiler\Phar\Buffering(
-                new \Millesime\Compiler\Finder\FinderGenerator(),
-                new \Methylbro\File\FileContents()
+                new \Millesime\Compiler\Finder\FinderGenerator()
             ),
         ];
     }

@@ -29,7 +29,7 @@ class InitCommand extends Command
             ->addArgument('project', InputArgument::REQUIRED, 'the name of the project')
             ->addArgument('distrib', InputArgument::REQUIRED, 'the name of your distrib')
 
-            ->addOption('manifest', 'm', InputOption::VALUE_OPTIONAL, 'Wich manifest file you will use', 'init.json')
+            ->addOption('manifest', 'm', InputOption::VALUE_OPTIONAL, 'Wich manifest file you will use', 'millesime.json')
             ->addOption('force', 'f', InputOption::VALUE_OPTIONAL, 'Force', false)
         ;
     }

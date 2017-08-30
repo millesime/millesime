@@ -14,7 +14,7 @@
                 "in": ["."],
                 "name": ["*.php", "millesime"],
                 "notName": ["*Test.php"],
-                "exclude": ["tests", "doc", "bin/installer"],
+                "exclude": ["tests", "doc", "bin/install"],
                 "ignoreDotFiles": true,
                 "ignoreVCS": true,
                 "followLinks": false,
