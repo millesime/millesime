@@ -1,11 +1,12 @@
 <?php
 
-namespace Millesime\Compiler;
+namespace Millesime\Compilation;
 
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\Config\Definition\Processor;
-use Millesime\Compiler\Definition\CompilerConfiguration;
-use Millesime\Compiler\Git\Version;
+use Millesime\Definition\CompilerConfiguration;
+use Millesime\Git\Version;
 
 class Project
 {
@@ -16,13 +17,10 @@ class Project
 
     public function __construct($source, $dest = null, array $config = [], LoggerInterface $logger = null)
     {
-        if (!$logger) {
-            $this->logger = new \Psr\Log\NullLogger();
-        }
-
         $this->source = $source;
-        $this->dest = $dest ? $dest : $source;
+        $this->dest = $dest ?: $source;
         $this->config = $config;
+        $this->logger = $logger ?: new NullLogger();
     }
 
     public function getSource()

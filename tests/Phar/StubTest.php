@@ -1,43 +1,37 @@
 <?php
 
-namespace Millesime\Compiler\Phar\Tests;
+namespace Millesime\Phar\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Millesime\Compiler\Phar\Factory;
-use Millesime\Compiler\Phar\Stub;
+use Millesime\Phar\Stub;
 
 class StubTest extends TestCase
 {
-    public function testStub()
-    {
-        $options = [
-            'dest' => '.',
-            'distrib' => [
-                'name' => 'test',
-                'stub' => '',
-                'autoexec' => false,
-            ]
-        ];
+	public function testSetStub()
+	{
+		$pharName = 'test.phar';
+		$stubfilename = 'stubfilename';
+		$options = [
+			'distrib' => [
+				'name' => 'test',
+				'stub' => $stubfilename,
+				'autoexec' => true,
+			],
+		];
 
-        $stub = new Stub();
-
-        $phar = $this
-            ->getMockBuilder('Phar')
+		$phar = $this
+			->getMockBuilder(\Phar::class)
             ->disableOriginalConstructor()
-            ->getMock()
+            ->setMethods(['setStub'])
+			->getMock()
+		;
+		$phar
+            ->expects($this->once())
+            ->method('setStub')
+            ->with($this->stringContains("require 'phar://{$pharName}/{$stubfilename}';"))
         ;
 
-        $phar = $stub->execute($phar, $options);
-
-        $this->assertEquals('', $phar->getStub());
-    }
-
-    public function tearDown()
-    {
-        if (is_file('test.phar')) {
-            unlink('test.phar');
-        }
-
-        parent::tearDown();
-    }
+		$stub = new Stub();
+		$stub->execute($phar, $options);
+	}
 }

@@ -1,23 +1,55 @@
 <?php
 
-namespace Millesime\Compiler\Phar;
+namespace Millesime\Phar;
 
-class Stub
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+use Millesime\Compilation\Step;
+
+class Stub implements Step
 {
-    public function execute(\Phar $phar, array $options)
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @param LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger = null)
+    {
+        $this->logger = $logger ?: new NullLogger();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function execute(\Phar $phar = null, array $options = array())
     {
         $pharName = $options['distrib']['name'].'.phar';
 
-        if ($options['distrib']['stub']) {
-            $phar = $this->setStub($phar, $pharName, $options['distrib']['stub'], $options['distrib']['autoexec']);
+        if (array_key_exists('stub', $options['distrib'])) {
+            $phar = $this->setStub(
+                $phar,
+                $pharName,
+                $options['distrib']['stub'],
+                $options['distrib']['autoexec']
+            );
         }
 
         return $phar;
     }
 
-    public function setStub($phar, $pharName, $stub, $autoexec)
+    /**
+     * @param \Phar $phar
+     * @param string $pharName
+     * @param string $stub
+     * @param boolean $autoexec
+     * @return \Phar
+     */
+    public function setStub(\Phar $phar, $pharName, $stub, $autoexec)
     {
-        $code =            
+        $code =
 <<<STUB
 <?php
 Phar::interceptFileFuncs();
@@ -30,6 +62,8 @@ STUB;
         }
 
         $phar->setStub($code);
+
+        $this->logger->debug("{$pharName} will run {$stub}");
 
         return $phar;
     }

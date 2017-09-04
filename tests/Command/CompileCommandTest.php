@@ -1,43 +1,50 @@
 <?php
 
-namespace Millesime\Compiler\Command\Tests;
+namespace Millesime\Command\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Millesime\Compiler\Command\CompileCommand;
+use Monolog\Logger;
+use Monolog\Handler\ErrorLogHandler;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Console\Output\OutputInterface;
+use Millesime\Compiler;
+use Millesime\Command\CompileCommand;
 
 class CompileCommandTest extends TestCase
 {
-    public function testCompileCommand()
+    public function testExecute()
     {
-        $factory = $this
-            ->getMockBuilder('Millesime\Compiler\CompilationFactory')
+        $compiler = $this
+            ->getMockBuilder(Compiler::class)
             ->disableOriginalConstructor()
-            ->setMethods(['create'])
+            ->setMethods(['execute'])
             ->getMock()
         ;
-        $compilation = $this
-            ->getMockBuilder('Millesime\Compiler\Compilation')
+        $compiler
+            ->expects($this->once())
+            ->method('execute')
+            ->with('./', getcwd(), 'millesime.json')
+        ;
+        $handler = $this
+            ->getMockBuilder(ErrorLogHandler::class)
             ->disableOriginalConstructor()
-            ->setMethods(['run'])
+            ->setMethods(['setLevel'])
             ->getMock()
         ;
-        $distributionBuilder = $this
-            ->getMockBuilder('Millesime\Compiler\DistributionBuilder')
-            ->getMock()
+        $handler
+            ->expects($this->once())
+            ->method('setLevel')
+            ->with(Logger::WARNING)
         ;
 
-        $factory
-            ->method('create')
-            ->willReturn($compilation)
-        ;
+        $command = new CompileCommand($compiler, $handler);
+        $tester = new CommandTester($command);
+        $tester->execute(
+            ['source' => './'],
+            ['verbosity' => OutputInterface::VERBOSITY_VERBOSE]
+        );
+        $output = $tester->getDisplay();
 
-        $command = new CompileCommand($factory, $distributionBuilder);
-
-        $commandTester = new CommandTester($command);
-        $commandTester->execute([], []);
-
-        $output = $commandTester->getDisplay();
-        $this->assertContains('Compilation completed', $output);
+        $this->assertEquals("Compilation completed\n", $output);
     }
 }

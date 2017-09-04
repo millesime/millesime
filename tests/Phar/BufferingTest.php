@@ -1,41 +1,24 @@
 <?php
 
-namespace Millesime\Compiler\Phar\Tests;
+namespace Millesime\Phar\Tests;
 
-use Millesime\Compiler\Finder\FinderGenerator;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Finder\Finder;
-use Millesime\Compiler\Phar\Buffering;
-use Methylbro\File\FileContents;
+use Millesime\Phar\Buffering;
+use Millesime\Finder\FinderGenerator;
 
 class BufferingTest extends TestCase
 {
     public function testBuffering()
     {
         $options = [
-            'name' => 'test',
-            'version' => 'test',
-            'source' => 'somewhere/',
+            'name' => '',
+            'version' => '',
             'distrib' => [
-                'name' => 'test',
+                'name' => '',
                 'autoexec' => true,
-                'stub' => 'foobar',
-                'finder' => [
-                    'in' => 'somewhere/'
-                ]
-            ]
+                'stub' => 'foobarfile',
+            ],
         ];
-
-        $filecontent = $this
-            ->getMockBuilder(FileContents::class)
-            ->getMock()
-        ;
-
-        $finder = $this
-            ->getMockBuilder(Finder::class)
-            ->setMethods(['files', 'ignoreVCS', 'in', 'getIterator'])
-            ->getMock()
-        ;
 
         $file = $this
             ->getMockBuilder(\SplFileInfo::class)
@@ -43,39 +26,62 @@ class BufferingTest extends TestCase
             ->setMethods(['getRelativePathname', 'getContents'])
             ->getMock()
         ;
+        $file
+            ->expects($this->once())
+            ->method('getRelativePathname')
+            ->willReturn('foobarfile')
+        ;
+        $file
+            ->expects($this->once())
+            ->method('getContents')
+            ->willReturn(
+<<<PHP
+#!/usr/bin/env php
+<?php
+echo "hello world";
+PHP
+            )
+        ;
 
-        $file->method('getRelativePathname')->willReturn($options['source'].'foobar');
-        $file->method('getContents')->willReturn('bar');
-
-        $iterator = new \ArrayIterator();
-        $iterator->append($file);
-
-        $finder->method('files')->willReturn($finder);
-        $finder->method('ignoreVCS')->willReturn($finder);
-        $finder->method('in')->with($this->equalTo($options['distrib']['finder']['in']))->willReturn($finder);
-        $finder->method('getIterator')->willReturn($iterator);
-
-        $finderGenerator = $this
+        $finder = $this
             ->getMockBuilder(FinderGenerator::class)
             ->setMethods(['finderFromConfig'])
             ->getMock()
         ;
-
-        $finderGenerator
+        $finder
+            ->expects($this->once())
             ->method('finderFromConfig')
-            ->with($this->equalTo($options))
-            ->willReturn($finder)
+            ->with($options)
+            ->willReturn([$file])
         ;
 
         $phar = $this
-            ->getMockBuilder('Phar')
+            ->getMockBuilder(\Phar::class)
             ->disableOriginalConstructor()
+            ->setMethods(['startBuffering', 'stopBuffering', 'addFromString'])
             ->getMock()
         ;
+        $phar
+            ->expects($this->once())
+            ->method('startBuffering')
+        ;
+        $phar
+            ->expects($this->once())
+            ->method('stopBuffering')
+        ;
+        $phar
+            ->expects($this->once())
+            ->method('addFromString')
+            ->with(
+                "foobarfile",
+<<<PHP
+<?php
+echo "hello world";
+PHP
+            )
+        ;
 
-        $phar->expects($this->once())->method('addFromString')->with($this->equalTo('somewhere/foobar'));
-
-        $buffering = new Buffering($finderGenerator, $filecontent);
-        $buffering->execute($phar, $options);
+        $buffering = new Buffering($finder);
+        $phar = $buffering->execute($phar, $options);
     }
 }

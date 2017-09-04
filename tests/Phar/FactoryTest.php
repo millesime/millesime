@@ -1,20 +1,15 @@
 <?php
 
-namespace Millesime\Compiler\Phar\Tests;
+namespace Millesime\Phar\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Millesime\Compiler\Phar\Factory;
+use Millesime\Phar\Factory;
 
 class FactoryTest extends TestCase
 {
     public function testFactory()
     {
-        $options = [
-            'dest' => '.',
-            'distrib' => [
-                'name' => 'test',
-            ]
-        ];
+        $options = ['filename' => 'test.phar'];
 
         $factory = new Factory();
         $phar = $factory->execute(null, $options);

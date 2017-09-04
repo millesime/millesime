@@ -1,48 +1,46 @@
 <?php
 
-namespace Millesime\Compiler\Command;
+namespace Millesime\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-
-use Millesime\Compiler\Project;
-use Millesime\Compiler\CompilationFactory;
-use Millesime\Compiler\DistributionBuilder;
-
+use Millesime\Finder\FinderGenerator;
 
 class InitCommand extends Command
 {
-    private $dry_run = false;
+    private $finderGenerator;
+
+    public function __construct(FinderGenerator $finderGenerator)
+    {
+        parent::__construct();
+
+        $this->finderGenerator = $finderGenerator;
+    }
 
     protected function configure()
     {
         $this
             ->setName('init')
             ->setDescription('Initialize a new project')
-
             ->addArgument('project', InputArgument::REQUIRED, 'the name of the project')
             ->addArgument('distrib', InputArgument::REQUIRED, 'the name of your distrib')
-
             ->addOption('manifest', 'm', InputOption::VALUE_OPTIONAL, 'Wich manifest file you will use', 'millesime.json')
-            ->addOption('force', 'f', InputOption::VALUE_OPTIONAL, 'Force', false)
+            ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (!$this->dry_run) {
-            $manifest = $input->getOption('manifest');
-            if (!file_exists($manifest) || $input->getOption('force')) {
-                file_put_contents($manifest, $this->getJson($input));
-            } else {
-                $output->writeln('The file '.$manifest.' already exists.');
-            }
+        $manifest = $input->getOption('manifest');
+        if (!file_exists($manifest) || $input->getOption('force')) {
+            file_put_contents($manifest, $this->getJson($input));
+        } else {
+            $output->writeln('The file '.$manifest.' already exists.');
         }
     }
 
@@ -55,7 +53,8 @@ class InitCommand extends Command
         $project = $helper->ask($input, $output, $question);
         $input->setArgument('project', $project);
 
-        $distrib = $input->getArgument('project', strtolower($project));;
+        $distrib = $input->getArgument('project', strtolower($project));
+        ;
         $question = new Question('Distribution name: [<info>'.$distrib.'</info>] ', $distrib);
         $distrib = $helper->ask($input, $output, $question);
         $input->setArgument('distrib', $project);
@@ -73,7 +72,9 @@ class InitCommand extends Command
         $distrib = $input->getArgument('distrib');
 
         $dist = new \stdClass;
-        $dist->name = $distrib; 
+        $dist->name = $distrib;
+        $dist->autoexec = false;
+        $dist->finder = $this->finderGenerator->finderGeneric();
 
         $config = new \stdClass;
         $config->name = $project;

@@ -1,15 +1,34 @@
 <?php
 
-namespace Millesime\Compiler\Phar;
+namespace Millesime\Phar;
 
-class Factory
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+use Millesime\Compilation\Step;
+
+class Factory implements Step
 {
-    public function execute($phar, array $options)
-    {
-        $pharName = $options['distrib']['name'].'.phar';
-        $pharFile = realpath($options['dest']).DIRECTORY_SEPARATOR.$pharName;
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
-        $phar = new \Phar($pharFile);
+    /**
+     * @param LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger = null)
+    {
+        $this->logger = $logger ?: new NullLogger();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function execute(\Phar $phar = null, array $options = array())
+    {
+        $phar = new \Phar($options['filename']);
+
+        $this->logger->debug("new Phar in {$options['filename']}");
 
         return $phar;
     }
