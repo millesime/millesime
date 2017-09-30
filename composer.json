@@ -1,5 +1,9 @@
 {
     "name": "millesime/millesime",
+    "type": "library",
+    "description": "Compile you PHP application into Phar archive(s).",
+    "homepage": "https://millesime.io",
+    "license": "MIT",
     "authors": [
         {
             "name": "Methylbro",
