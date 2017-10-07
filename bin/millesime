@@ -1,13 +1,13 @@
 #!/usr/bin/env php
 <?php
 
-$file = '/vendor/autoload.php';
+$file = '/autoload.php';
 
 $requireif = function($path) use ($file) {
 	return file_exists($path.$file) ? require $path.$file : false;
 };
 
-($loader = $requireif(__DIR__.'/..')) || ($loader = $requireif(__DIR__.'/../../..'));
+($loader = $requireif(__DIR__.'/../vendor')) || ($loader = $requireif(__DIR__.'/..'));
 
 $millesime = new Millesime\Application();
 $millesime->run();
