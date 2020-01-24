@@ -1,36 +1,28 @@
 {
     "name": "millesime/millesime",
-    "type": "library",
-    "description": "Compile you PHP application into Phar archive(s).",
-    "homepage": "https://millesime.io",
-    "license": "MIT",
     "authors": [
         {
-            "name": "Methylbro",
+            "name": "Thomas GASC",
             "email": "thomas@gasc.fr"
         }
     ],
     "require": {
-        "php": "^7.1",
-        "psr/log": "^1.0",
-        "monolog/monolog": "^1.23",
-        "symfony/console": "^3.2",
-        "symfony/finder": "^3.2",
-        "symfony/config": "^3.2",
-        "symfony/process": "^3.3",
-        "symfony/dependency-injection": "^3.2",
-        "symfony/options-resolver": "^3.2",
-        "schnittstabil/finder-by-config": "^0.1"
+        "php": "^7.4",
+        "ext-phar": "*",
+        "schnittstabil/finder-by-config": "^1.1",
+        "symfony/process": "^5.0",
+        "symfony/console": "^5.0",
+        "psr/log": "^1.1",
+        "symfony/event-dispatcher": "^5.0",
+        "symfony/dependency-injection": "^5.0",
+        "symfony/config": "^5.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.5"
     },
     "autoload": {
         "psr-4": {
             "Millesime\\": "src/"
         }
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^6.2"
-    },
-    "bin": [
-        "bin/millesime"
-    ]
+    }
 }

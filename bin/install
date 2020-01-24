@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-bin/millesime compile ./
-sudo cp millesime.phar /usr/local/bin/millesime
-chmod +x /usr/local/bin/millesime
-
-echo 'millesime installed'

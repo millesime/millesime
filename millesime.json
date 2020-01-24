@@ -1,26 +1,44 @@
 {
-    "name": "Millesime",
-    "authors": [
+    "project": "Millesime",
+    "packages": [
         {
-            "name": "Methylbro",
-            "email": "thomas@gasc.fr"
-        }
-    ],
-    "distrib": [
-        {
-            "name": "millesime",
-            "stub": "bin/millesime",
+            "name": "millesime-website.phar",
+            "stub": "public/index.php",
+            "web-based": true,
+            "signature": {
+                "algorithm": "SHA512"
+            },
             "finder": {
-                "in": ["."],
-                "name": ["*.php", "millesime"],
+                "in": ["public"],
+                "name": ["*.php", "*.html"],
                 "notName": ["*Test.php"],
                 "notPath": ["#vendor/.*/.*/Tests#", "#vendor/.*/.*/tests#"],
-                "exclude": ["bin/install", "doc", "tests"],
                 "ignoreDotFiles": true,
                 "ignoreVCS": true,
                 "followLinks": false,
                 "ignoreUnreadableDirs": false
             }
+        },
+        {
+            "name": "millesime.phar",
+            "stub": "bin/millesime",
+            "signature": {
+                "algorithm": "SHA512"
+            },
+            "finder": {
+                "in": ["."],
+                "name": ["*.php", "millesime"],
+                "notName": ["*Test.php"],
+                "notPath": ["#vendor/.*/.*/Tests#", "#vendor/.*/.*/tests#"],
+                "exclude": ["bin/install", "doc", "tests", "public"],
+                "ignoreDotFiles": true,
+                "ignoreVCS": true,
+                "followLinks": false,
+                "ignoreUnreadableDirs": false
+            },
+            "scripts": [
+                "composer install --no-dev --optimize-autoloader"
+            ]
         }
     ]
 }

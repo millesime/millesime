@@ -1,5 +1,9 @@
-/coverage/
 /vendor/
-/composer.lock
-.DS_Store
+composer.lock
 millesime.phar
+millesime-website.phar
+phpunit.xml
+.phpunit.result.cache
+public.pem
+private.pem
+*.phar.pubkey

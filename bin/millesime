@@ -1,13 +1,19 @@
-#!/usr/bin/env php
 <?php
 
-$file = '/autoload.php';
+$loader = require __DIR__.'/../vendor/autoload.php';
 
-$requireif = function($path) use ($file) {
-	return file_exists($path.$file) ? require $path.$file : false;
-};
+use Symfony\Component\Console\Application;
 
-($loader = $requireif(__DIR__.'/../vendor')) || ($loader = $requireif(__DIR__.'/..'));
+$application = new Application(
+	'Millesime',
+	defined('MILLESIME_VERSION')?MILLESIME_VERSION:'dev'
+);
 
-$millesime = new Millesime\Application();
-$millesime->run();
+$build = new Millesime\Command\Build();
+$application->add($build);
+$application->setDefaultCommand($build->getName());
+
+$command = new Millesime\Command\Init();
+$application->add($command);
+
+$application->run();

@@ -2,50 +2,63 @@
 
 namespace Millesime;
 
-use Millesime\Compilation\ProjectFactory;
-use Millesime\Compilation\CompilationFactory;
-use Millesime\Compilation\DistributionBuilder;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+use Symfony\Component\Process\Process;
+use Millesime\Factory\PharFactory;
+use Millesime\Factory\PackageFactory;
 
+/**
+ * Compile your projects into phar archives.
+ * 
+ * @author Thomas Gasc <thomas@gasc.fr>
+ */
 class Compiler
 {
-    /**
-     * @var ProjectFactory
-     */
-    private $projectFactory;
+    private PharFactory $pharFactory;
+    private PackageFactory $packageFactory;
+    private LoggerInterface $logger;
 
     /**
-     * @var CompilationFactory
+     * Constructor
+     *
+     * @param PharFactory          $pharFactory
+     * @param PackageFactory       $packageFactory
+     * @param LoggerInterface|null $logger
      */
-    private $compilationFactory;
-
-    /**
-     * @var DistributionBuilder
-     */
-    private $distributionBuilder;
-
-    /**
-     * @param ProjectFactory $projectFactory
-     * @param CompilationFactory $compilationFactory
-     * @param DistributionBuilder $distributionBuilder
-     */
-    public function __construct(ProjectFactory $projectFactory, CompilationFactory $compilationFactory, DistributionBuilder $distributionBuilder)
-    {
-        $this->projectFactory = $projectFactory;
-        $this->compilationFactory = $compilationFactory;
-        $this->distributionBuilder = $distributionBuilder;
+    public function __construct(
+        PharFactory $pharFactory,
+        PackageFactory $packageFactory,
+        LoggerInterface $logger = null
+    ) {
+        $this->pharFactory = $pharFactory;
+        $this->packageFactory = $packageFactory;
+        $this->logger = $logger ?: new NullLogger;
     }
 
     /**
-     * @param string $source
-     * @param string $dest
-     * @param string $manifest
-     * @return Array
+     * @param Release $release
+     * @return Package[]
      */
-    public function execute($source, $dest, $manifest)
+    public function __invoke(Release $release) : Iterable
     {
-        $project = $this->projectFactory->create($source, $dest, $manifest);
-        $compilation = $this->compilationFactory->create($project);
+        return array_map(
+            [$this, 'build'],
+            $release->getBuildsPlan(
+                $this->logger
+            )
+        );
+    }
 
-        return $compilation->run($this->distributionBuilder);
+    /**
+     * @param BuildPlan $buildPlan
+     * @return Package
+     */
+    public function build(BuildPlan $buildPlan) : Package
+    {
+        $phar = $this->pharFactory->__invoke($buildPlan);
+        $package = $this->packageFactory->__invoke($buildPlan);
+
+        return $package;
     }
 }
