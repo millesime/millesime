@@ -40,7 +40,7 @@ class Loader
         ;
         if (!$files->hasResults()) {
             throw new \Millesime\Exception\ManifestNotFound(
-                self::MANIFEST,
+                $this->defaultFilename,
                 $workingDirectory
             );
         }

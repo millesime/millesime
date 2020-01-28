@@ -2,6 +2,28 @@
 
 function get_release()
 {
+    if (file_exists('.cache')) {
+        $cacheDate = (new Datetime())->setTimestamp(filemtime('.cache'));
+        $invalidDate = new Datetime('yesterday');
+        if ($cacheDate<=$invalidDate) {
+            error_log('Cache outdated.');
+            $result = do_get_release();
+            file_put_contents('.cache', $result);
+        } else {
+            error_log('Retrieve from cache.');
+            $result = file_get_contents('.cache');
+        }
+    } else {
+        error_log('No cache. Rebuild it.');
+        $result = do_get_release();
+        file_put_contents('.cache', $result);
+    }
+
+    return json_decode($result);
+}
+
+function do_get_release()
+{
     $ch = curl_init();
     $url = "https://api.github.com/repos/millesime/millesime/releases/latest";
     if (getenv('GITHUB_CLIENTID')!==false && getenv('GITHUB_CLIENTSECRET')!==false) {
@@ -33,7 +55,7 @@ function get_release()
 
     error_log(curl_getinfo($ch, CURLINFO_HEADER_OUT).$result);
 
-    return json_decode($result);
+    return $result;
 }
 
 function get_asset($release, $name)

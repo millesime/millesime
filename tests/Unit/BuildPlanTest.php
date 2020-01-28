@@ -4,7 +4,6 @@ use PHPUnit\Framework\TestCase;
 
 use Millesime\BuildPlan;
 use Millesime\Release;
-use Millesime\Signature;
 use Millesime\Manifest\PackageInfo;
 use Symfony\Component\Finder\Finder;
 

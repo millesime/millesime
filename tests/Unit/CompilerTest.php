@@ -7,8 +7,8 @@ use Millesime\Compiler;
 use Millesime\Release;
 use Millesime\BuildPlan;
 use Millesime\Package;
-use Millesime\PharFactory;
-use Millesime\PackageFactory;
+use Millesime\Factory\PharFactory;
+use Millesime\Factory\PackageFactory;
 
 class CompilerTest extends TestCase
 {
@@ -52,6 +52,7 @@ class CompilerTest extends TestCase
         $packageFactory = $this
             ->getMockBuilder(PackageFactory::class)
             ->disableOriginalConstructor()
+            ->setMethods(['__invoke'])
             ->getMock()
         ;
         $packageFactory

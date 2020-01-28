@@ -1,5 +1,4 @@
 /vendor/
-composer.lock
 millesime.phar
 millesime-website.phar
 phpunit.xml
@@ -7,3 +6,4 @@ phpunit.xml
 public.pem
 private.pem
 *.phar.pubkey
+.cache

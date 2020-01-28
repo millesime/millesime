@@ -44,4 +44,17 @@ class PackageTest extends TestCase
 
         $this->assertInstanceOf(\Phar::class, $phar);
     }
+
+    public function testNeedPublicKey()
+    {
+        $file = $this
+            ->getMockBuilder(\SplFileInfo::class)
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+
+        $package = new Package($file, true);
+
+        $this->assertTrue($package->needPublicKey());
+    }
 }

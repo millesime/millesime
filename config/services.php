@@ -9,7 +9,9 @@ return function(ContainerConfigurator $configurator) {
     $services->set('logger')->synthetic();
     $services->set('event_dispatcher', 'Symfony\Component\EventDispatcher\EventDispatcher');
 
-    $services->set('millesime.process_factory', 'Millesime\Factory\ProcessFactory');
+    $services->set('millesime.process_factory', 'Millesime\Factory\ProcessFactory')
+    ->args([['Symfony\Component\Process\Process', 'fromShellCommandline']])
+    ;
     $services->set('millesime.phar_factory', 'Millesime\Factory\PharFactory')
         ->args([ref('event_dispatcher'), ref('logger')])
     ;

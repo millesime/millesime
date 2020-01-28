@@ -1,0 +1,33 @@
+{
+    "project": "Millesime Test Project",
+    "packages": [
+        {
+            "name": "test-millesime-1.phar",
+            "stub": "index.php",
+            "signature": {
+                "algorithm": "SHA512"
+            },
+            "web-based": true,
+            "finder": {
+                "in": ["."],
+                "name": ["*.php"],
+                "notName": ["ignored.php"],
+                "ignoreVCS": true
+            }
+        },
+        {
+            "name": "test-millesime-2.phar",
+            "signature": {
+                "algorithm": "SHA512"
+            },
+            "finder": {
+                "in": ["."],
+                "name": ["*.php"],
+                "ignoreVCS": true
+            },
+            "scripts": [
+                "echo '' > generated.php"
+            ]
+        }
+    ]
+}

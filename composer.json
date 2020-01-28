@@ -1,5 +1,6 @@
 {
     "name": "millesime/millesime",
+    "description": "Create Phar archive(s) from your PHP project.",
     "authors": [
         {
             "name": "Thomas GASC",
@@ -20,9 +21,15 @@
     "require-dev": {
         "phpunit/phpunit": "^8.5"
     },
+    "suggest": {
+        "ext-openssl": "Needed to sign phar archives with OpenSSL"
+    },
     "autoload": {
         "psr-4": {
             "Millesime\\": "src/"
         }
-    }
+    },
+    "bin": [
+        "bin/millesime"
+    ]
 }

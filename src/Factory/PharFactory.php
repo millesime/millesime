@@ -11,30 +11,41 @@ use Millesime\Event\CreatedPhar;
 
 class PharFactory
 {
-    private LoggerInterface $logger;
     private EventDispatcher $dispatcher;
+    private LoggerInterface $logger;
+    private $checkExistingPharMethod;
+    private $deleteExistingPharMethod;
 
     /**
      * @param EventDispatcher      $dispatcher
      * @param LoggerInterface|null $logger
+     * @param callable             $checkExistingPharMethod
+     * @param callable             $deleteExistingPharMethod
      */
     public function __construct(
         EventDispatcher $dispatcher,
-        LoggerInterface $logger = null
+        LoggerInterface $logger = null,
+        callable $checkExistingPharMethod = null,
+        callable $deleteExistingPharMethod = null
     ) {
         $this->dispatcher = $dispatcher;
         $this->logger = $logger ?: new NullLogger;
+        $this->checkExistingPharMethod = $checkExistingPharMethod ?: 'file_exists'; 
+        $this->deleteExistingPharMethod = $deleteExistingPharMethod ?: ['Phar', 'unlinkArchive'];
     }
 
     public function __invoke(BuildPlan $buildPlan) : Phar
     {
-        if (file_exists($buildPlan->getFileName())) {
-            #unlink($buildPlan->getFileName());
+        if (call_user_func($this->checkExistingPharMethod, $buildPlan->getFileName())) {
             /**
+             * Do not simply use unlink() :
              * @see https://bugs.php.net/bug.php?id=69323
              * @see https://www.php.net/manual/fr/phar.unlinkarchive.php
              */
-            Phar::unlinkArchive($buildPlan->getFileName());
+            call_user_func(
+                $this->deleteExistingPharMethod, 
+                $buildPlan->getFileName()
+            );
         }
 
         $phar = new Phar($buildPlan->getFileName());
