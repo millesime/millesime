@@ -23,7 +23,8 @@
     },
     "suggest": {
         "ext-hash": "Needed to sign phar archives with SHA256 & SHA512",
-        "ext-openssl": "Needed to sign phar archives with OpenSSL"
+        "ext-openssl": "Needed to sign phar archives with OpenSSL",
+        "millesime/appellation": "Helps you to push your phar packages into your releases assets"
     },
     "autoload": {
         "psr-4": {
