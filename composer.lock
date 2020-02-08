@@ -287,7 +287,7 @@
         },
         {
             "name": "symfony/config",
-            "version": "v5.0.3",
+            "version": "v5.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
@@ -351,16 +351,16 @@
         },
         {
             "name": "symfony/console",
-            "version": "v5.0.3",
+            "version": "v5.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "345ab6ecb456b5147ea3b3271d7f1f00aadfd257"
+                "reference": "91c294166c38d8c0858a86fad76d8c14dc1144c8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/345ab6ecb456b5147ea3b3271d7f1f00aadfd257",
-                "reference": "345ab6ecb456b5147ea3b3271d7f1f00aadfd257",
+                "url": "https://api.github.com/repos/symfony/console/zipball/91c294166c38d8c0858a86fad76d8c14dc1144c8",
+                "reference": "91c294166c38d8c0858a86fad76d8c14dc1144c8",
                 "shasum": ""
             },
             "require": {
@@ -423,20 +423,20 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2020-01-19T11:13:19+00:00"
+            "time": "2020-01-25T15:56:29+00:00"
         },
         {
             "name": "symfony/dependency-injection",
-            "version": "v5.0.3",
+            "version": "v5.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dependency-injection.git",
-                "reference": "5a56807650c7258bbcc4a15a020904958c70247e"
+                "reference": "86338f459313525dd95f5a012f8a9ea118002f94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/5a56807650c7258bbcc4a15a020904958c70247e",
-                "reference": "5a56807650c7258bbcc4a15a020904958c70247e",
+                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/86338f459313525dd95f5a012f8a9ea118002f94",
+                "reference": "86338f459313525dd95f5a012f8a9ea118002f94",
                 "shasum": ""
             },
             "require": {
@@ -496,11 +496,11 @@
             ],
             "description": "Symfony DependencyInjection Component",
             "homepage": "https://symfony.com",
-            "time": "2020-01-21T08:40:24+00:00"
+            "time": "2020-01-31T09:49:43+00:00"
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v5.0.3",
+            "version": "v5.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
@@ -628,7 +628,7 @@
         },
         {
             "name": "symfony/filesystem",
-            "version": "v5.0.3",
+            "version": "v5.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
@@ -678,7 +678,7 @@
         },
         {
             "name": "symfony/finder",
-            "version": "v4.4.3",
+            "version": "v4.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
@@ -902,7 +902,7 @@
         },
         {
             "name": "symfony/process",
-            "version": "v5.0.3",
+            "version": "v5.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",

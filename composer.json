@@ -22,6 +22,7 @@
         "phpunit/phpunit": "^8.5"
     },
     "suggest": {
+        "ext-hash": "Needed to sign phar archives with SHA256 & SHA512",
         "ext-openssl": "Needed to sign phar archives with OpenSSL"
     },
     "autoload": {

@@ -42,7 +42,7 @@ return function(ContainerConfigurator $configurator) {
         ->tag('kernel.event_listener', ['event' => 'millesime.created_phar'])
     ;
     $services->set('millesime.created_phar.sign', 'Millesime\Build\Sign')
-        ->args(['%passphrase%', ref('logger')])
+        ->args(['%passphrase%', \Phar::getSupportedSignatures(), ref('logger')])
         ->tag('kernel.event_listener', ['event' => 'millesime.created_phar'])
     ;
 
