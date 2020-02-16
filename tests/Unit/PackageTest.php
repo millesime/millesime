@@ -1,7 +1,8 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+namespace Millesime\Tests\Unit;
 
+use PHPUnit\Framework\TestCase;
 use Millesime\Package;
 
 class PackageTest extends TestCase
@@ -43,6 +44,20 @@ class PackageTest extends TestCase
         $phar = $package->open();
 
         $this->assertInstanceOf(\Phar::class, $phar);
+    }
+
+    public function testInfo()
+    {
+        $file = $this
+            ->getMockBuilder(\SplFileInfo::class)
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+
+        $package = new Package($file);
+        $info = $package->info();
+
+        $this->assertEquals($info, $file);
     }
 
     public function testNeedPublicKey()

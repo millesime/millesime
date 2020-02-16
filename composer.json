@@ -28,7 +28,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Millesime\\": "src/"
+            "Millesime\\": "src/",
+            "Millesime\\Tests\\": "tests/"
         }
     },
     "bin": [

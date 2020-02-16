@@ -1,7 +1,9 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+namespace Millesime\Tests\Unit;
 
+use \SplFileInfo;
+use PHPUnit\Framework\TestCase;
 use Millesime\Exception\ManifestNotReadable;
 
 class ManifestNotReadableTest extends TestCase

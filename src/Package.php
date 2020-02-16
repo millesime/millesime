@@ -26,11 +26,6 @@ class Package
         $this->needPublicKey = $needPublicKey;
     }
 
-    public function getName() : string
-    {
-        return $this->file->getFilename();
-    }
-
     /**
      * Get the Phar archive.
      *
@@ -39,6 +34,16 @@ class Package
     public function open() : Phar
     {
         return new Phar($this->file->getPathname());
+    }
+
+    public function info() : SplFileInfo
+    {
+        return $this->file;
+    }
+
+    public function getName() : string
+    {
+        return $this->file->getFilename();
     }
 
     public function needPublicKey() : bool

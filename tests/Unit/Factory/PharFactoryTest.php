@@ -1,7 +1,9 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+namespace Millesime\Tests\Unit;
 
+use \Phar;
+use PHPUnit\Framework\TestCase;
 use Millesime\BuildPlan;
 use Millesime\Event\CreatedPhar;
 use Millesime\Factory\PharFactory;

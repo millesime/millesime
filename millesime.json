@@ -37,7 +37,6 @@
                 "ignoreUnreadableDirs": false
             },
             "scripts": [
-                "sed -i '1d' bin/millesime",
                 "composer install --no-dev --optimize-autoloader"
             ]
         }

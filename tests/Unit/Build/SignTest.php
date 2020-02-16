@@ -1,7 +1,9 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+namespace Millesime\Tests\Unit;
 
+use \Phar;
+use PHPUnit\Framework\TestCase;
 use Millesime\Build\Sign;
 use Millesime\BuildPlan;
 use Millesime\Manifest\PackageInfo;
