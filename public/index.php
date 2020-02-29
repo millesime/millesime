@@ -1,6 +1,6 @@
 <?php
 
-require 'get-release.php';
+require __DIR__.'/get-release.php';
 
 $uri = $_SERVER['REQUEST_URI'];
 $routes = ['/', '/getting-started', '/executable-archives', '/signed-archives', '/download'];
@@ -33,10 +33,10 @@ if ('/download' === $uri) {
         </style>
     </head>
     <body>
-<?php if ('/'===$uri): ?>
+    <?php if ('/' === $uri): ?>
         <header>
             <h1>Millesime.phar</h1>
-            <p>Create Phar archive(s) from your PHP project.</p>
+            <p>Create Phar archives from your PHP project.</p>
         </header>
         <nav aria-labelledby="mainmenulabel">
             <h2 id="mainmenulabel">Main menu</h2>
@@ -54,9 +54,8 @@ if ('/download' === $uri) {
         <main>
             <article id="what-is-millesime">
                 <h2>What is Millesime?</h2>
-                <p>Millesime is a tool for creating Phar archives in PHP.<br>
-                It allows you to declare the files of your project that you want to be packaged and ignore those you 
-                want to be ignored based on a single configuration file.</p>
+                <p>Millesime is a tool to create Phar archives in PHP.<br>
+                A single configuration file allows to specify the files to be packaged and to be ignored.</p>
                 <aside>
                     <nav>
                         <a href="/getting-started">Getting started →</a>
@@ -64,21 +63,21 @@ if ('/download' === $uri) {
                 </aside>
                 <h3>What is "Phar archive"?</h3>
                 <blockquote>
-                    <p>Phar archives are best characterized as a convenient way to group several files into a single file. 
-                    As such, a phar archive provides a way to distribute a complete PHP application in a single file and 
-                    run it from that file without the need to extract it to disk. Additionally, phar archives can be executed 
-                    by PHP as easily as any other file, both on the commandline and from a web server. Phar is kind of like a 
-                    thumb drive for PHP applications.</p>
+                    <p>A Phar artiche can be characterized as a convenient way to group several files into a single bundle.<br> 
+                    It's a simple way to distribute and to run a complete PHP application from a single file.<br>
+                    Additionally, phar archives can be executed by PHP as standard PHP files, 
+                    both from command line and web server. <br>
+                    You can think of it as the executable thumb drive for your PHP applications.</p>
                     <footer>What is phar? in 
                         <a href="https://www.php.net/manual/en/intro.phar.php"><cite>PHP Manual</cite></a>.
                     </footer>
                 </blockquote>
             </article>
         </main>
-<?php elseif('/getting-started'===$uri): ?>
+    <?php elseif('/getting-started' === $uri): ?>
         <header>
             <h1>Millesime.phar</h1>
-            <p>A tool for creating Phar archives in PHP.</p>
+            <p>A tool to create Phar archives in PHP.</p>
         </header>
         <nav aria-labelledby="mainmenulabel">
             <h2 id="mainmenulabel">Main menu</h2>
@@ -97,7 +96,7 @@ if ('/download' === $uri) {
                             <a href="#installation">Installation</a>
                             <ol>
                                 <li>Requirements</li>
-                                <li>Install as a composer dependency</li>
+                                <li>Install via composer</li>
                             </ol>
                         </li>
                         <li>
@@ -122,39 +121,58 @@ if ('/download' === $uri) {
                 <h3>Installation</h3>
                 <p>Simply <a href="/download">download</a> the <em>millesime.phar</em> archive and make it executable.</p>
                 <pre><code>wget -O millesime.phar https://millesime.io/download
-chmod +x millesime.phar</code></pre>
+    chmod +x millesime.phar</code></pre>
                 <p>Move it into <code>/usr/local/bin</code> if you want to use it globaly.</p>
                 <pre><code>sudo mv millesime.phar /usr/local/bin/millesime</code></pre>
                 <h4>Requirements</h4>
                 <ul>
-                    <li>PHP 7.4.1 or above (at least 7.4.0 recommended to avoid potential bugs),</li>
+                    <li>PHP 7.4.1 and above (at least 7.4.0 recommended to avoid potential bugs),</li>
                     <li>Phar extension with <a href="https://www.php.net/manual/fr/phar.configuration.php#ini.phar.readonly">phar.readonly</a> directive set to Off,</li>
                     <li>OpenSSL enabled if you want to sign your <code>.phar</code> archives.</li>
                 </ul>
-                <h4>Install as a composer dependency</h4>
+                <h4>Install via composer</h4>
                 <pre><code>composer require millesime/millesime</code></pre>
                 <pre><code>php vendor/bin/millesime</code></pre>
+                <h4>Install globally via composer</h4>
+                <p>To install Millesime, install Composer and issue the following command:</p>
+                <pre><code>composer global require millesime/millesime</code></pre>
+                <p>Then make sure you have the global Composer binaries directory in your <code>PATH</code>.
+                    This directory is platform-dependent, see Composer documentation for details. Example for some Unix systems:</p>
+                <pre><code>$ export PATH="$PATH:$HOME/.composer/vendor/bin"</code></pre>
             </article>
 
             <article id="manifest">
                 <h3>The <code>millesime.json</code> manifest</h3>
-                <p>To start using Millesime in your project, all you need is a <code>millesime.json</code> file. This file describes what files of your project will contain your <code>.phar</code> and may contain other metadata as well.</p>
-                <p>You could use the <code>init</code> command to start with a quick <code>millesime.json</code> manifest.</p>
+                <p>Millesime can be configured with a <code>millesime.json</code> manifest. <br>
+                This is were the name of the archive, the files to include or exclude from the phar archives will configured.</p>
+                <p>Use the <code>init</code> command to create a default <code>millesime.json</code> manifest.</p>
                 <pre><code>cd /your/project/path
-millesime init</code></pre>
-                <h4>The <code>packages</code> key</h4>
-                <p>The goal of Millesime is to create phar archives. So one of the two minimal things that your <code>millesime.json</code> should contains is the archives names.</p>
+    millesime init</code></pre>
+                <h4>The <code>packages</code> section</h4>
+                <p>This the main section of the manifest. This is where each archives to be created will be configured.<br>
+                    This section contains an array of package objects.</p>
+                <p>The <code>name</code> indicates the output path of the phar archive.</p>
                 <pre><code>{
     "packages": [
         {
             "name": "yourpackage.phar",
-            // ...
+            // ...        
         }
     ]
-}</code></pre>
-                <p>As you see, you could create any phar archive you want from a single project.</p>
-                <h4>The <code>package.finder</code> key</h4>
-                <p>The second things yous has to do is to describe wich files wiil be included from your project into your phar archive.</p>
+    }</code></pre>
+                
+                <p>The <code>stub</code> is the entrypoint of your application. It's the file that is loaded when the phar is run.</p>
+                            <pre><code>{
+                "packages": [
+                    {
+                        "name": "yourpackage.phar",
+                        "name": "public/index.php"
+                        // ...
+                    }
+                ]
+                }</code></pre>
+
+                <p>The <code>finder</code> object indicates the files and directories to include in the phar archive.</p>
                 <pre><code>{
     "packages": [
         {
@@ -166,50 +184,63 @@ millesime init</code></pre>
             }
         }
     ]
-}</code></pre>
-                <h4>Other config options</h4>
+    }</code></pre>
+
+                <h4>Configuration options</h4>
                 <dl>
-                    <dt>stub</dt>
-                    <dd>Indicates the file inside your phar archive that yould be executed when someone will try to execute your phar package.</dd>
+                    <dt>name <em>(required)</em></dt>
+                    <dd>Output path of the generated archive</dd>
+                    <dt>stub (required)</dt>
+                    <dd>Entrypoint of the phar package. 
+                        It's the file that is exectued when the archive is run.</dd>
+                    <dt>finder <em>(required)</em></dt>
+                    <dt>finder.in</dt>
+                    <dd>Directories to include</dd>
+                    <dt>finder.name</dt>
+                    <dd>Pattern of files to include</dd>
+                    <dt>finder.ignoreVSC</dt>
+                    <dd>Excludes all git files from package.</dd>
                     <dt>web-based</dt>
-                    <dd>Indicates if your package will be executed by a webserver.</dd>
+                    <dd>Indicates if your package will be executed on a webserver.</dd>
                     <dt>signature</dt>
-                    <dd>Information upon your phar signature method.</dd>
+                    <dd>Configuration of the phar signature method.</dd>
                     <dt>scripts</dt>
-                    <dd>A list of command that will be executed before build your archive.</dd>
+                    <dd>List of commands to execute before building the archive.</dd>
                 </dl>
             </article>
 
-
             <article id="build">
                 <h3>Start creating archives</h3>
-                <h4>Create archives from CLI</h4>
-                <p>Then use the <code>build</code> command each time you want to create <code>.phar</code> archives based on your project.</p>
+                <h4>From CLI</h4>
                 <pre><code>millesime build</code></pre>
-                <p>You will get the created .phar filenames as an output.</p>
+                <p>Create the <code>.phar</code> archives in the directories specified in the `packages.name` section of the <code>millesime.json</code> manifest.</p>
                 <h5>Parameters</h5>
-                <p>The build command takes two optional parameters : <code>source</code> and <code>destination</code>. They could be usefull if you want to execute millesime from different working directory than your project.</p>
+                <p>The build command takes two optional parameters: <code>source</code> and <code>destination</code>. These arguments can be used to run Millesime from outside the project directory.</p>
+                <pre><code>millesime build source destination</code></pre>
                 <h5>Options</h5>
-                <p>With the <code>--watch</code> (or <code>-w</code>) option, Millesime watches for changes to files and runs a build when a change occurs. If you want to avoid executing the scripts defined in the manifest, you could use the <code>--no-scripts</code> option. In case that your OpenSSL private key needs a passphrase, you could indicate it to millesime in the <code>--passphrase</code> (or <code>-p</code>) option. It is recommendanded to do so interractively.</p>
-                <h4>Creating archives from code</h4>
-                <p>I you had installed Millesime as a Composer dependency, you could use it as a library. For example :</p>
+                <p><code>--watch</code> (or <code>-w</code>): automatically build the archives when a change occurs.<br>
+                    <code>--no-scripts</code>: prevent the scripts defined in the manifest to be executed.<br>
+                    <code>--passphrase</code> (or <code>-p</code>): passphrase of the OpenSSL private key. If left empty, the input will be interactive.</p>
+
+                <h4>From PHP</h4>
+                <p>Millesime is available as PHP library when installed using Composer.</p>
                 <pre><code>&lt;?php
-require 'vendor/autoload.php';
+    require 'vendor/autoload.php';
 
-use Millesime\Millesime;
-use Psr\Log\NullLogger;
+    use Millesime\Millesime;
+    use Psr\Log\NullLogger;
 
-$logger = new NullLogger; // millesime output
-$passphrase = null; // eq. --passphrase option
-$noSripts = false; // eq. --no-scripts option
+    $logger = new NullLogger; // Disable millesime output
+    $passphrase = null; // eq. --passphrase option
+    $noScripts = false; // eq. --no-scripts option
 
-$millesime = new Millesime($logger, $passphrase, $noSripts);
-$packages = $millesime('/path/to/project', '/where/you/want/phar/archives');
+    $millesime = new Millesime($logger, $passphrase, $noScripts);
+    $packages = $millesime('/path/to/project', '/where/you/want/phar/archives');
 
-foreach ($packages as $package) {
-    echo $package->getName(). " has been created\n";
-}
-</code></pre>
+    foreach ($packages as $package) {
+    echo "$package->getName() created\n";
+    }
+    </code></pre>
                 <aside>
                     <nav>
                         <a href="/executable-archives">Executable archives →</a>
@@ -217,10 +248,10 @@ foreach ($packages as $package) {
                 </aside>
             </article>
         </main>
-<?php elseif('/executable-archives'===$uri): ?>
+    <?php elseif('/executable-archives' === $uri): ?>
         <header>
             <h1>Millesime.phar</h1>
-            <p>A tool for creating Phar archives in PHP.</p>
+            <p>A tool to create Phar archives in PHP.</p>
         </header>
         <nav aria-labelledby="mainmenulabel">
             <h2 id="mainmenulabel">Main menu</h2>
@@ -234,14 +265,14 @@ foreach ($packages as $package) {
                 <h2>Executable archives</h2>
             </article>
             <article>
-                <h3>Make for CLI</h3>
+                <h3>Run from CLI</h3>
                 <pre><code>&lt;?php
-// command.php
+    // command.php
 
-printf('Hello %s!', $argv[0]);
-</code></pre>
+    printf('Hello %s!', $argv[0]);
+    </code></pre>
                 <pre><code>{
-    "packages" : [
+    "packages": [
         {
             "name": "hello-world.phar"
             "stub": "command.php",
@@ -249,17 +280,17 @@ printf('Hello %s!', $argv[0]);
             // ...
         }
     ]
-}</code></pre>
-                <pre><code>hello-world.phar Simon</code></pre>
-                <p>The command above will repond <em>Hello Simon!</em>.</p>
+    }</code></pre>
+                <pre><code>php hello-world.phar Simon</code></pre>
+                <p>The command above will output <em>Hello Simon!</em>.</p>
                 <h3>Make for Web</h3>
                 <pre><code>&lt;?php
-// index.php
+    // index.php
 
-printf('Hello %s!', $_GET['name']);
-</code></pre>
+    printf('Hello %s!', $_GET['name']);
+    </code></pre>
                 <pre><code>{
-    "packages" : [
+    "packages": [
         {
             "name": "hello-world.phar"
             "stub": "index.php",
@@ -267,15 +298,15 @@ printf('Hello %s!', $_GET['name']);
             // ...
         }
     ]
-}</code></pre>
+    }</code></pre>
                 <pre><code>php -S localhost:80 hello-world.phar</code></pre>
-                <p>You webapp running on 80 will respond <em>Hello Garfunkel</em> to <a href="http://localhost:80/?name=Garfunkel" rel="nofollow">http://localhost:80/?name=Garfunkel</a></p>
+                <p>Your webapp running on the port 80 will output <em>Hello Garfunkel</em> to <a href="http://localhost:80/?name=Garfunkel" rel="nofollow">http://localhost:80/?name=Garfunkel</a></p>
             </article>
         </main>
-<?php elseif('/signed-archives'===$uri): ?>
+    <?php elseif('/signed-archives'===$uri): ?>
         <header>
             <h1>Millesime.phar</h1>
-            <p>A tool for creating Phar archives in PHP.</p>
+            <p>A tool to create Phar archives in PHP.</p>
         </header>
         <nav aria-labelledby="mainmenulabel">
             <h2 id="mainmenulabel">Main menu</h2>
@@ -286,7 +317,7 @@ printf('Hello %s!', $_GET['name']);
         </nav>
         <main>
         </main>
-<?php endif; ?>
+    <?php endif; ?>
 
         <footer>
             <hr>
